@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <string>
 #include <iostream>
+#include "Dot.h"
 
 class Game
 {
@@ -29,5 +30,8 @@ private:
 
 	// if game loop is happening
 	bool isRunning;
+
+	Dot m_playerDot;
+	Dot m_otherDot;
 
 };

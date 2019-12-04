@@ -1,6 +1,9 @@
 #include "Game.h"
 
 Game::Game()
+	:
+	m_playerDot{true},
+	m_otherDot{false}
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
@@ -10,7 +13,7 @@ Game::Game()
 	else
 	{
 		// create window
-		m_window = SDL_CreateWindow("Tag, you're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
+		m_window = SDL_CreateWindow("Tag, You're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
 		if (!m_window)
 		{
 			std::cout << getErrorString("Error Loading Window") << std::endl;
@@ -30,7 +33,8 @@ Game::Game()
 		//{
 		//	std::cout << getErrorString("Error Loading Texture") << std::endl;
 		//}
-
+		m_playerDot.Init(m_renderer);
+		m_otherDot.Init(m_renderer);
 	}
 }
 
@@ -63,10 +67,15 @@ void Game::processEvents()
 		break;
 	}
 
+	m_playerDot.handleEvent(event);
+	m_otherDot.handleEvent(event);
+
 }
 
 void Game::update()
 {
+	m_playerDot.move(600, 800);
+	m_otherDot.move(600, 800);
 	//update things here
 
 }
@@ -76,7 +85,8 @@ void Game::render()
 	SDL_RenderClear(m_renderer);
 	
 	//render things here
-
+	m_playerDot.render(m_renderer);
+	m_otherDot.render(m_renderer);
 
 	SDL_RenderPresent(m_renderer);
 }

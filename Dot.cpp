@@ -43,13 +43,14 @@ void Dot::Init(SDL_Renderer *gRenderer)
 {
 	if (isChaser)
 	{
-		if (!gDotTexture.loadFromFile("reddot.bmp", gRenderer))
+		if (!gDotTexture.loadFromFile("assets/reddot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
 		}
 	}
-	else {
-		if (!gDotTexture.loadFromFile("bluedot.bmp", gRenderer))
+	else 
+	{
+		if (!gDotTexture.loadFromFile("assets/bluedot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
 		}
@@ -164,13 +165,6 @@ int Dot::GetCenterY()
 bool Dot::Checkcollision(int centerX, int centerY)
 {
 	int distance = sqrt(((mCenterX - centerX) * (mCenterX - centerX)) + ((mCenterY - centerY) * (mCenterY - centerY)));
-	
-	if (distance <= width)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+
+	return distance <= width;
 }
