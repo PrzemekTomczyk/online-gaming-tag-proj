@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "Dot.h"
+//#include "GameClientHandler.h"
 
 class Game
 {
@@ -33,5 +34,7 @@ private:
 
 	Dot m_playerDot;
 	Dot m_otherDot;
+
+	//GameClientHandler m_gch;
 
 };

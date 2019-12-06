@@ -58,6 +58,24 @@ void Game::processEvents()
 	SDL_Event event;
 	SDL_PollEvent(&event);
 
+	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+	{
+		//Adjust the velocity
+		switch (event.key.keysym.sym)
+		{
+		case SDLK_ESCAPE: 
+			SDL_Quit(); 
+			isRunning = false;
+			break;
+		case SDLK_SPACE:
+			//m_gch.connectToServer("127.0.0.1", 1111);
+			break;
+		default:
+			break;
+		}
+	}
+
+
 	switch (event.type)
 	{
 	case SDL_QUIT:
@@ -69,14 +87,13 @@ void Game::processEvents()
 
 	m_playerDot.handleEvent(event);
 	m_otherDot.handleEvent(event);
-
 }
 
 void Game::update()
 {
+	//update things here
 	m_playerDot.move(600, 800);
 	m_otherDot.move(600, 800);
-	//update things here
 
 }
 

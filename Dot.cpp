@@ -39,7 +39,7 @@ void Dot::SetPosition(int x, int y)
 }
 
 //"dot.bmp"
-void Dot::Init(SDL_Renderer *gRenderer)
+void Dot::Init(SDL_Renderer* gRenderer)
 {
 	if (isChaser)
 	{
@@ -48,7 +48,7 @@ void Dot::Init(SDL_Renderer *gRenderer)
 			printf("Failed to load dot texture!\n");
 		}
 	}
-	else 
+	else
 	{
 		if (!gDotTexture.loadFromFile("assets/bluedot.bmp", gRenderer))
 		{
@@ -141,7 +141,7 @@ void Dot::move(int SCREEN_HEIGHT, int SCREEN_WIDTH)
 	mCenterY = mPosY + (height / 2);
 }
 
-void Dot::render(SDL_Renderer *gRenderer)
+void Dot::render(SDL_Renderer* gRenderer)
 {
 	//Show the dot
 	gDotTexture.render(mPosX, mPosY, gRenderer);
@@ -149,7 +149,7 @@ void Dot::render(SDL_Renderer *gRenderer)
 
 std::string Dot::GetPosAsString()
 {
-	return std::string("X: "+ std::to_string(mPosX) + ", " + "Y: " + std::to_string(mPosY));
+	return std::string("X: " + std::to_string(mPosX) + ", " + "Y: " + std::to_string(mPosY));
 }
 
 int Dot::GetCenterX()

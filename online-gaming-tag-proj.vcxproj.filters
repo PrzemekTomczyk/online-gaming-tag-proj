@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ClientFiles">
+      <UniqueIdentifier>{b7cf06da-99bf-4de2-8338-194526254ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClientFiles\Header Files">
+      <UniqueIdentifier>{58fda05b-baf9-4ab8-99ff-786d02ede781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClientFiles\Source Files">
+      <UniqueIdentifier>{7162d9ce-d8bc-470e-80d7-2127547191d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LTexture.cpp">
@@ -27,6 +36,30 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientIni.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketManager.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketStructs.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SendGetMethods.cpp">
+      <Filter>ClientFiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClientHandler.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClientHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LTexture.h">
@@ -37,6 +70,24 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>ClientFiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTransferData.h">
+      <Filter>ClientFiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>ClientFiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketManager.h">
+      <Filter>ClientFiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketStructs.h">
+      <Filter>ClientFiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketType.h">
+      <Filter>ClientFiles\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
