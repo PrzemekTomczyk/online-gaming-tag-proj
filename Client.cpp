@@ -59,6 +59,25 @@ bool Client::ProcessPacketType(PacketType packetType)
 	return true;
 }
 
+std::string Client::ProcessGamePacket(const PacketType packetType)
+{
+	switch (packetType)
+	{
+	case PacketType::GameData: //If PacketType is a chat message PacketType
+	{
+		std::string gameData; //string to store GameData we received
+		if (!GetString(gameData)) //Get the GameData and store it in variable: GameData
+			return "data received"; //If we do not properly get the chat message, return false
+		std::cout << gameData << std::endl; //Display the gameData to the user
+		break;
+	}
+	default: //If PacketType type is not accounted for
+		std::cout << "Packet is not of type GameData, PacketType is: " << (std::int32_t)packetType << std::endl; //Display that PacketType was not found
+		break;
+	}
+	return "no data";
+}
+
 void Client::ClientThread(Client & client)
 {
 	PacketType PacketType;

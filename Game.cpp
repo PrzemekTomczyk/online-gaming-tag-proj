@@ -3,7 +3,10 @@
 Game::Game()
 	:
 	m_playerDot{true},
-	m_otherDot{false}
+	m_otherDot{false},
+	WINDOW_WIDTH(800),
+	WINDOW_HEIGHT(600),
+	PORT_NUM(1111)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
@@ -13,7 +16,7 @@ Game::Game()
 	else
 	{
 		// create window
-		m_window = SDL_CreateWindow("Tag, You're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
+		m_window = SDL_CreateWindow("Tag, You're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, NULL);
 		if (!m_window)
 		{
 			std::cout << getErrorString("Error Loading Window") << std::endl;
@@ -68,13 +71,13 @@ void Game::processEvents()
 			isRunning = false;
 			break;
 		case SDLK_SPACE:
-			m_gch.connectToServer("127.0.0.1", 1111);
+			//change local host to user input after adding IP input option
+			m_connectedSuccessfully = m_gch.connectToServer(LOCAL_HOST, PORT_NUM);
 			break;
 		default:
 			break;
 		}
 	}
-
 
 	switch (event.type)
 	{
@@ -91,9 +94,11 @@ void Game::processEvents()
 
 void Game::update()
 {
+
+
 	//update things here
-	m_playerDot.move(600, 800);
-	m_otherDot.move(600, 800);
+	m_playerDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	m_otherDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 }
 

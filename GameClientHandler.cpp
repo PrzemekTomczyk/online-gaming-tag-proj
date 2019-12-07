@@ -22,10 +22,11 @@ bool GameClientHandler::connectToServer(std::string t_ip, int t_port)
 
 	if (!m_client->Connect())
 	{
-		std::cout << "Failed to connect to server..." << std::endl;
+		m_isConnected = false;
 		return false;
 	}
 
+	m_isConnected = true;
 	return true;
 }
 

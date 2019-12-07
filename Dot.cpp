@@ -115,7 +115,7 @@ void Dot::handleEvent(SDL_Event& e)
 	}
 }
 
-void Dot::move(int SCREEN_HEIGHT, int SCREEN_WIDTH)
+void Dot::move(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	//Move the dot left or right
 	mPosX += mVelX;

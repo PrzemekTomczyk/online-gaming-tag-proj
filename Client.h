@@ -4,8 +4,6 @@
 #include "FileTransferData.h" //For FileTransferData class
 #include "PacketManager.h" //For PacketManager class
 
-//test?
-
 class Client
 {
 public: //Public functions
@@ -19,6 +17,10 @@ public: //Public functions
 private: //Private functions
 	bool CloseConnection();
 	bool ProcessPacketType(const PacketType packetType);
+
+	//function to process a packet with gamedata
+	std::string ProcessGamePacket(const PacketType packetType);
+	
 	static void ClientThread(Client & client); //Client thread which reads messages from server
 	static void PacketSenderThread(Client & client); //Packet sender thread which sends out packets existing in packet manager
 	//Sending Funcs

@@ -31,10 +31,18 @@ private:
 
 	// if game loop is happening
 	bool isRunning;
+	//if game connected to server successfully
+	bool m_connectedSuccessfully;
 
 	Dot m_playerDot;
 	Dot m_otherDot;
 
 	GameClientHandler m_gch;
+
+	//consts
+	const int WINDOW_WIDTH;
+	const int WINDOW_HEIGHT;
+	const int PORT_NUM;
+	const std::string LOCAL_HOST = "127.0.0.1";
 
 };
