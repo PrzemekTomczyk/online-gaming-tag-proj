@@ -3,6 +3,10 @@
 #pragma comment(lib,"ws2_32.lib") //Required for WinSock
 #include <iostream> //for std::cout
 
+/// <summary>
+/// add packet processing for GameData
+/// </summary>
+
 bool Client::ProcessPacketType(PacketType packetType)
 {
 	switch (packetType)
@@ -13,6 +17,14 @@ bool Client::ProcessPacketType(PacketType packetType)
 		if (!GetString(Message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
 		std::cout << Message << std::endl; //Display the message to the user
+		break;
+	}
+	case PacketType::GameData: //If PacketType is a chat message PacketType
+	{
+		std::string gameData; //string to store GameData we received
+		if (!GetString(gameData)) //Get the GameData and store it in variable: GameData
+			return false; //If we do not properly get the chat message, return false
+		std::cout << gameData << std::endl; //Display the gameData to the user
 		break;
 	}
 	case PacketType::FileTransferByteBuffer:

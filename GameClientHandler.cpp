@@ -26,7 +26,7 @@ bool GameClientHandler::connectToServer(std::string t_ip, int t_port)
 		return false;
 	}
 
-	return false;
+	return true;
 }
 
 bool GameClientHandler::disconnect()

@@ -68,7 +68,7 @@ void Game::processEvents()
 			isRunning = false;
 			break;
 		case SDLK_SPACE:
-			//m_gch.connectToServer("127.0.0.1", 1111);
+			m_gch.connectToServer("127.0.0.1", 1111);
 			break;
 		default:
 			break;
