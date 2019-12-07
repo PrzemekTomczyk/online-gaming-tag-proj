@@ -8,8 +8,10 @@ public:
 	~GameClientHandler();
 
 	bool connectToServer(std::string t_ip, int t_port);
-	bool disconnect();
+	void disconnect();
 	bool isConnected() { return m_isConnected; }
+	void sendGameData(std::string t_gameData);
+	void destroyPointer();
 
 private:
 	Client* m_client;

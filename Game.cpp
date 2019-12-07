@@ -36,8 +36,8 @@ Game::Game()
 		//{
 		//	std::cout << getErrorString("Error Loading Texture") << std::endl;
 		//}
-		m_playerDot.Init(m_renderer);
-		m_otherDot.Init(m_renderer);
+		m_playerDot.init(m_renderer);
+		m_otherDot.init(m_renderer);
 	}
 }
 
@@ -66,11 +66,19 @@ void Game::processEvents()
 		//Adjust the velocity
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_ESCAPE: 
+		case SDLK_ESCAPE:
+			m_gch.disconnect();
 			SDL_Quit(); 
 			isRunning = false;
 			break;
+		case SDLK_BACKSPACE:
+			m_gch.disconnect();
+			break;
+		case SDLK_RETURN:
+			m_gch.destroyPointer();
+			break;
 		case SDLK_SPACE:
+			// Use below bool to display whether we connected successfully or not or something
 			//change local host to user input after adding IP input option
 			m_connectedSuccessfully = m_gch.connectToServer(LOCAL_HOST, PORT_NUM);
 			break;
@@ -94,7 +102,17 @@ void Game::processEvents()
 
 void Game::update()
 {
+	if (m_gch.isConnected())
+	{
+		//we online bois
+		std::string gameData;
 
+		gameData += std::to_string(m_playerDot.GetCenterX());
+		gameData += ",";
+		gameData += std::to_string(m_playerDot.GetCenterY());
+
+		m_gch.sendGameData(gameData);
+	}
 
 	//update things here
 	m_playerDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);

@@ -16,7 +16,7 @@ public:
 	Dot(bool chaser);
 	~Dot();
 
-	void Init(SDL_Renderer *gRenderer);
+	void init(SDL_Renderer *gRenderer);
 	//Takes key presses and adjusts the dot's velocity
 	void handleEvent(SDL_Event& e);
 
@@ -26,7 +26,7 @@ public:
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer);
 
-	std::string GetPosAsString();
+	std::string getPosAsString();
 
 	bool Checkcollision(int centerX, int centerY);
 
@@ -42,13 +42,11 @@ private:
 	bool isChaser;
 
 	//The X and Y offsets of the dot
-	int mPosX, mPosY;
+	int m_posX, m_posY;
 
-	int width, height;
-
-	int mCenterX, mCenterY;
+	int m_centerX, m_centerY;
 	//The velocity of the dot
-	int mVelX, mVelY;
+	int m_velX, m_velY;
 
-	LTexture gDotTexture;
+	LTexture m_gDotTexture;
 };

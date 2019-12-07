@@ -3,10 +3,6 @@
 #pragma comment(lib,"ws2_32.lib") //Required for WinSock
 #include <iostream> //for std::cout
 
-/// <summary>
-/// add packet processing for GameData
-/// </summary>
-
 bool Client::ProcessPacketType(PacketType packetType)
 {
 	switch (packetType)
@@ -95,6 +91,7 @@ void Client::ClientThread(Client & client)
 	if (client.CloseConnection()) //Try to close socket connection..., If connection socket was closed properly
 	{
 		std::cout << "Socket to the server was closed successfully." << std::endl;
+		client.joinThreads();
 	}
 	else //If connection socket was not closed properly for some reason from our function
 	{

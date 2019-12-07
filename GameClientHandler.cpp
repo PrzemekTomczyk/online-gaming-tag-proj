@@ -30,17 +30,20 @@ bool GameClientHandler::connectToServer(std::string t_ip, int t_port)
 	return true;
 }
 
-bool GameClientHandler::disconnect()
+void GameClientHandler::disconnect()
 {
-	try
-	{
-		m_client->Disconnect();
-		delete m_client;
-		m_client = nullptr;
-		return true;
-	}
-	catch (const std::exception&)
-	{
-		return false;
-	}
+	m_client->Disconnect();
+	//delete m_client;
+	//m_client = nullptr;
+}
+
+void GameClientHandler::sendGameData(std::string t_gameData)
+{
+	m_client->SendGameData(t_gameData);
+}
+
+void GameClientHandler::destroyPointer()
+{
+	delete m_client;
+	m_client = nullptr;
 }

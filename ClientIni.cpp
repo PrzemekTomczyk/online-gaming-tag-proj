@@ -14,7 +14,6 @@ Client::Client(const char * ip, const int port)
 		exit(0);
 	}
 
-
 	inet_pton(AF_INET, ip, &m_addr.sin_addr.s_addr); //Server Address [127.0.0.1] = localhost
 	m_addr.sin_port = htons(port); //Port 
 	m_addr.sin_family = AF_INET; //IPv4 Socket
