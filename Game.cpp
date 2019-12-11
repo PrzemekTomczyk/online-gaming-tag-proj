@@ -107,13 +107,12 @@ void Game::update()
 	m_otherDot.move(600, 800);
 
 	bool collisionDetected = false;
-	if (m_isHost)
-	{
+
 		if (m_playerDot.collisionDetection(m_otherDot))
 		{
 			collisionDetected = true;
 		}
-	}
+
 
 	if (m_gch.isConnected())
 	{
@@ -186,9 +185,13 @@ void Game::processGameData()
 
 void Game::processWinData()
 {
-	if (m_gch.getWinData() != "")
+	if (!m_gch.getWinData().empty())
 	{
-
+		std::string& winData = m_gch.getWinData();
+		if (winData == "Win")
+		{
+			std::cout << "OUCH!" << std::endl;
+		}
 	}
 }
 
