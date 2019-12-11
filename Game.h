@@ -7,6 +7,7 @@
 #include <iterator>
 #include "Dot.h"
 #include "GameClientHandler.h"
+#include "SDL_ttf.h"
 
 class Game
 {
@@ -23,6 +24,8 @@ private:
 	void cleanup();
 	void processGameData();
 	void processWinData();
+	void gameFinished();
+	void restart();
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -47,5 +50,15 @@ private:
 	GameClientHandler m_gch;
 
 	bool m_isHost;
+
+	int gameStartTime;
+
+	TTF_Font *m_font;
+
+	SDL_Surface* m_textMessage;
+	SDL_Texture* m_textTexture;
+
+	bool m_gameOver;
+	SDL_Rect m_textRect;
 
 };
