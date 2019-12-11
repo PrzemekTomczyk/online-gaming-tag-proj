@@ -72,6 +72,7 @@ void Game::processEvents()
 			{
 				m_gch.disconnect();
 			}
+			std::cout << "Connect to IP: ";
 			std::string ip;
 			std::cin >> ip;
 			m_gch.connectToServer(ip, 1111);
