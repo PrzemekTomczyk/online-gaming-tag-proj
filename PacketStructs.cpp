@@ -26,7 +26,7 @@ namespace PS
 	}
 
 	GameData::GameData(const std::string& t_msg) :
-		m_message(t_msg)
+		m_gameData(t_msg)
 	{
 	}
 
@@ -34,8 +34,8 @@ namespace PS
 	{
 		std::shared_ptr<Packet> p = std::make_shared<Packet>();
 		p->Append(PacketType::GameData);
-		p->Append(m_message.size());
-		p->Append(m_message);
+		p->Append(m_gameData.size());
+		p->Append(m_gameData);
 		return p;
 	}
 	WinData::WinData(const std::string& t_str) :

@@ -1,10 +1,9 @@
 #include "Game.h"
 
 
-Game::Game()
-	:
-	m_playerDot{ true },
-	m_otherDot{ false },
+Game::Game() :
+	m_redDot{ true },
+	m_blueDot{ false },
 	WINDOW_WIDTH(800),
 	WINDOW_HEIGHT(600),
 	PORT_NUM(1111)
@@ -22,8 +21,8 @@ Game::Game()
 
 
 		m_isRunning = true;
-		m_playerDot.init(m_renderer);
-		m_otherDot.init(m_renderer);
+		m_redDot.init(m_renderer);
+		m_blueDot.init(m_renderer);
 	}
 	catch (std::string error)
 	{
@@ -31,8 +30,13 @@ Game::Game()
 		m_isRunning = false;
 	}
 
-	m_localPosX = m_playerDot.GetCenterX();
-	m_localPosY = m_playerDot.GetCenterY();
+	m_localPosX = m_redDot.GetCenterX();
+	m_localPosY = m_redDot.GetCenterY();
+
+	//#############################################################
+	//temporarily hardcode redDot to be the player!
+	m_playerDot = &m_redDot;
+	//#############################################################
 }
 
 Game::~Game()
@@ -79,17 +83,17 @@ void Game::processEvents()
 			m_gch.disconnect();
 			break;
 		case SDLK_SPACE:
+		{
+			if (m_gch.isConnected())
 			{
-				if (m_gch.isConnected())
-				{
-					m_gch.disconnect();
-				}
-				std::cout << "Connect to IP: ";
-				std::string ip;
-				std::getline(std::cin, ip);
-				m_gch.connectToServer(ip, PORT_NUM);
-				break;
+				m_gch.disconnect();
 			}
+			std::cout << "Connect to IP: ";
+			std::string ip;
+			std::getline(std::cin, ip);
+			m_gch.connectToServer(ip, PORT_NUM);
+			break;
+		}
 		default:
 			break;
 		}
@@ -104,19 +108,19 @@ void Game::processEvents()
 		break;
 	}
 
-	m_playerDot.handleEvent(event);
-	m_otherDot.handleEvent(event);
+	m_redDot.handleEvent(event);
+	m_blueDot.handleEvent(event);
 }
 
 void Game::update()
 {
 	//update things here
-	m_playerDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
-	m_otherDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	bool collisionDetected = false;
 
-	if (m_playerDot.collisionDetection(m_otherDot))
+	if (m_redDot.collisionDetection(m_blueDot))
 	{
 		collisionDetected = true;
 	}
@@ -127,11 +131,11 @@ void Game::update()
 		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 		{
 			m_timeSinceLastSend = SDL_GetTicks();
-			if (m_localPosX != m_playerDot.GetCenterX() || m_localPosY != m_playerDot.GetCenterY())
+			if (m_localPosX != m_redDot.GetCenterX() || m_localPosY != m_redDot.GetCenterY())
 			{
-				m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
-				m_localPosX = m_playerDot.GetCenterX();
-				m_localPosY = m_playerDot.GetCenterY();
+				m_gch.sendGameData(m_redDot.GetCenterX(), m_redDot.GetCenterY());
+				m_localPosX = m_redDot.GetCenterX();
+				m_localPosY = m_redDot.GetCenterY();
 			}
 			if (collisionDetected)
 			{
@@ -148,15 +152,14 @@ void Game::render()
 	SDL_RenderClear(m_renderer);
 
 	//render things here
-	m_playerDot.render(m_renderer);
-	m_otherDot.render(m_renderer);
+	m_redDot.render(m_renderer);
+	m_blueDot.render(m_renderer);
 
 	SDL_RenderPresent(m_renderer);
 }
 
 void Game::cleanup()
 {
-	SDL_DestroyTexture(m_texture);
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
 	SDL_QUIT;
@@ -185,7 +188,7 @@ void Game::processGameData()
 			posVec.push_back(pos);
 		}
 
-		m_otherDot.SetPosition(posVec[0], posVec[1]);
+		m_blueDot.SetPosition(posVec[0], posVec[1]);
 	}
 }
 

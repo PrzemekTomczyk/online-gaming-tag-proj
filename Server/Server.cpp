@@ -5,14 +5,14 @@
 
 void Server::ClientHandlerThread(Server & server, std::shared_ptr<Connection> connection) //ID = the index in the SOCKET connections array
 {
-	PacketType packettype;
+	PacketType packetType;
 	while (true)
 	{
 		if (server.m_terminateThreads == true)
 			break;
-		if (!server.GetPacketType(connection, packettype)) //Get packet type
+		if (!server.GetPacketType(connection, packetType)) //Get packet type
 			break; //If there is an issue getting the packet type, exit this loop
-		if (!server.ProcessPacket(connection, packettype)) //Process packet (packet type)
+		if (!server.ProcessPacket(connection, packetType)) //Process packet (packet type)
 			break; //If there is an issue processing the packet, exit this loop
 	}
 	std::cout << "Lost connection to client ID: " << connection->m_ID << std::endl;

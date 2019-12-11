@@ -4,6 +4,7 @@ enum class PacketType
 	ChatMessage,
 	GameData,
 	WinData,
+	ConnectionData,
 	FileTransferRequestFile, //Sent to request a file
 	FileTransfer_EndOfFile, //Sent for when file transfer is complete
 	FileTransferByteBuffer, //Sent before sending a byte buffer for file transfer
