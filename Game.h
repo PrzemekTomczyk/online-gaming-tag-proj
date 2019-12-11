@@ -22,6 +22,7 @@ private:
 	void render();
 	void cleanup();
 	void processGameData();
+	void processWinData();
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -42,5 +43,7 @@ private:
 	Dot m_otherDot;
 
 	GameClientHandler m_gch;
+
+	bool m_isHost;
 
 };

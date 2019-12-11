@@ -24,6 +24,15 @@ bool Client::ProcessPacketType(PacketType packetType)
 		std::cout << m_gameData << std::endl;
 		break;
 	}
+	case PacketType::WinData:
+	{
+		std::string winData;
+		if (!GetString(winData))
+			return false;
+		m_winData = winData;
+		std::cout << m_winData << std::endl;
+		break;
+	}
 	case PacketType::FileTransferByteBuffer:
 	{
 		std::int32_t buffersize; //buffer to hold size of buffer to write to file

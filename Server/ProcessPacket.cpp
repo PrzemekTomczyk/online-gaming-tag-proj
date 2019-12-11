@@ -49,6 +49,25 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 		std::cout << "Processed gameData packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
+	case PacketType::WinData:
+	{
+		std::string winData;
+		if (!GetString(connection, winData))
+			return false;
+		PS::WinData wd(winData);
+		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(wd.toPacket());
+		{
+			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+			for (auto conn : m_connections)
+			{
+				if (conn == connection)
+					continue;
+				conn->m_pm.Append(msgPacket);
+			}
+		}
+		std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
+		break;
+	}
 	case PacketType::FileTransferRequestFile:
 	{
 		std::string fileName; //string to store file name

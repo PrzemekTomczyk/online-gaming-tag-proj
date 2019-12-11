@@ -38,6 +38,12 @@ void Dot::SetPosition(int x, int y)
 	mCenterY = mPosY + (height / 2);
 }
 
+bool Dot::collisionDetection(Dot& t_otherDot)
+{
+	float distanceBetween = sqrt(std::pow(t_otherDot.mCenterX - mCenterX, 2.0f) + std::pow(t_otherDot.mCenterY - mCenterY, 2.0f));
+	return distanceBetween <= DOT_HEIGHT;
+}
+
 //"dot.bmp"
 void Dot::Init(SDL_Renderer* gRenderer)
 {

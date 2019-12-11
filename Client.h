@@ -7,11 +7,12 @@
 class Client
 {
 public: //Public functions
-	Client(const char * ip, const int port, std::string& t_gameData);
+	Client(const char * ip, const int port, std::string& t_gameData, std::string& t_winData);
 	bool Connect();
 	void Disconnect();
 	void SendString(const std::string & str);
 	void SendGameData(const std::string& t_data);
+	void SendWinData(const std::string& t_data);
 	bool RequestFile(const std::string & fileName);
 	bool getConnected();
 	~Client();
@@ -40,4 +41,5 @@ private: //Private variables
 	std::thread m_ct; //Create thread to listen to server
 
 	std::string& m_gameData;
+	std::string& m_winData;
 };

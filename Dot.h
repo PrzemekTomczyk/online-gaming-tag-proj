@@ -1,5 +1,6 @@
 #pragma once
 #include "LTexture.h"
+#include <cmath>
 
 class Dot
 {
@@ -36,6 +37,8 @@ public:
 	int GetCenterY();
 
 	void SetPosition(int x, int y);
+
+	bool collisionDetection(Dot& t_otherDot);
 
 private:
 	bool isLocalplayer;

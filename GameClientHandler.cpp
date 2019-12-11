@@ -17,7 +17,7 @@ void GameClientHandler::connectToServer(std::string t_ip, int t_port)
 		disconnect();
 	}
 
-	m_client = new Client(t_ip.c_str(), t_port, m_gameData);
+	m_client = new Client(t_ip.c_str(), t_port, m_gameData, m_winData);
 
 	if (!m_client->Connect())
 	{
@@ -35,6 +35,11 @@ void GameClientHandler::disconnect()
 std::string& GameClientHandler::getGameData()
 {
 	return m_gameData;
+}
+
+std::string& GameClientHandler::getWinData()
+{
+	return m_winData;
 }
 
 bool GameClientHandler::isConnected()
@@ -56,4 +61,10 @@ void GameClientHandler::sendGameData(int t_posX, int t_posY)
 	data += ",";
 	data += std::to_string(t_posY);
 	m_client->SendGameData(data);
+}
+
+void GameClientHandler::sendWinData()
+{
+	std::string data = "Win";
+	m_client->SendWinData(data);
 }

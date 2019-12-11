@@ -102,15 +102,31 @@ void Game::update()
 	m_playerDot.move(600, 800);
 	m_otherDot.move(600, 800);
 
+	bool collisionDetected = false;
+	if (m_isHost)
+	{
+		if (m_playerDot.collisionDetection(m_otherDot))
+		{
+			collisionDetected = true;
+		}
+	}
+
 	if (m_gch.isConnected())
 	{
 		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 		{
 			m_timeSinceLastSend = SDL_GetTicks();
 			m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
+			if (collisionDetected)
+			{
+				m_gch.sendWinData();
+			}
 		}
 		processGameData();
+		processWinData();
 	}
+
+
 }
 
 void Game::render()
@@ -156,6 +172,14 @@ void Game::processGameData()
 		}
 
 		m_otherDot.SetPosition(posVec[0], posVec[1]);
+	}
+}
+
+void Game::processWinData()
+{
+	if (m_gch.getWinData() != "")
+	{
+
 	}
 }
 
