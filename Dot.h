@@ -31,7 +31,7 @@ public:
 
 	bool Checkcollision(int centerX, int centerY);
 
-	bool GetLocal() { return isLocalplayer; };
+	bool GetLocal() { return m_isLocalplayer; };
 
 	int GetCenterX();
 	int GetCenterY();
@@ -41,17 +41,15 @@ public:
 	bool collisionDetection(Dot& t_otherDot);
 
 private:
-	bool isLocalplayer;
-	bool isChaser;
+	bool m_isLocalplayer;
+	bool m_isChaser;
 
 	//The X and Y offsets of the dot
-	int mPosX, mPosY;
+	int m_posX, m_posY;
 
-	int width, height;
-
-	int mCenterX, mCenterY;
+	int m_centerX, m_centerY;
 	//The velocity of the dot
-	int mVelX, mVelY;
+	int m_velX, m_velY;
 
-	LTexture gDotTexture;
+	LTexture m_dotTexture;
 };

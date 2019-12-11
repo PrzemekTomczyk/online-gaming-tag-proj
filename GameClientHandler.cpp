@@ -17,7 +17,14 @@ void GameClientHandler::connectToServer(std::string t_ip, int t_port)
 		disconnect();
 	}
 
-	m_client = new Client(t_ip.c_str(), t_port, m_gameData, m_winData);
+	if (t_ip.empty())
+	{
+		m_client = new Client(LOCAL_HOST.c_str(), t_port, m_gameData, m_winData);
+	}
+	else
+	{
+		m_client = new Client(t_ip.c_str(), t_port, m_gameData, m_winData);
+	}
 
 	if (!m_client->Connect())
 	{

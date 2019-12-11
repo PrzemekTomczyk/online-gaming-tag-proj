@@ -39,6 +39,8 @@ private:
 	unsigned int m_timeSinceLastSend = 0;
 	const bool SEND_DELAY = 50;
 
+	int m_localPosX, m_localPosY;
+
 	Dot m_playerDot;
 	Dot m_otherDot;
 

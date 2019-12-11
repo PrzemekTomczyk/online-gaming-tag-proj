@@ -72,8 +72,9 @@ void Game::processEvents()
 			{
 				m_gch.disconnect();
 			}
+			std::cout << "Connect to IP: ";
 			std::string ip;
-			std::cin >> ip;
+			std::getline(std::cin, ip);
 			m_gch.connectToServer(ip, 1111);
 			break;
 		}
@@ -100,6 +101,10 @@ void Game::update()
 {
 	//update things here
 	m_playerDot.move(600, 800);
+
+	m_localPosX = m_playerDot.GetCenterX();
+	m_localPosY = m_playerDot.GetCenterY();
+
 	m_otherDot.move(600, 800);
 
 	bool collisionDetected = false;
