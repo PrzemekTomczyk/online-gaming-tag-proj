@@ -33,7 +33,7 @@ private:
 	SDL_Texture* m_texture;
 
 	// if game loop is happening
-	bool isRunning;
+	bool m_isRunning;
 
 	unsigned int m_timeSinceLastSend = 0;
 	const bool SEND_DELAY = 50;

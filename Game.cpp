@@ -6,36 +6,24 @@ Game::Game()
 	m_playerDot{ true },
 	m_otherDot{ false }
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	try
 	{
-		throw getErrorString("Error Loading SDL");
-		isRunning = false;
-	}
-	else
-	{
-		// create window
-		m_window = SDL_CreateWindow("Tag, You're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
-		if (!m_window)
-		{
-			std::cout << getErrorString("Error Loading Window") << std::endl;
-		}
-		// create renderer
-		m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-		if (!m_renderer)
-		{
-			std::cout << getErrorString("Error Loading Renderer") << std::endl;
-		}
-		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-		isRunning = true;
+		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) throw "Error Loading SDL";
+		m_window = SDL_CreateWindow("Final Year Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
+		if (!m_window) throw "Error Loading Window";
 
-		////load texture
-		//m_texture = IMG_LoadTexture(m_renderer, "assets/grid.png");
-		//if (!m_texture)
-		//{
-		//	std::cout << getErrorString("Error Loading Texture") << std::endl;
-		//}
+		m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+		if (!m_renderer) throw "Error Loading Renderer";
+
+		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+		m_isRunning = true;
 		m_playerDot.Init(m_renderer);
 		m_otherDot.Init(m_renderer);
+	}
+	catch (std::string error)
+	{
+		std::cout << error << std::endl;
+		m_isRunning = false;
 	}
 }
 
@@ -46,11 +34,21 @@ Game::~Game()
 
 void Game::run()
 {
-	while (isRunning)
+	const int FPS = 60;
+	const int frameDelay = 1000 / FPS;
+	Uint32 frameStart;
+	int frameTime;
+	while (m_isRunning)
 	{
+		frameStart = SDL_GetTicks();
+		frameTime = SDL_GetTicks() - frameStart;
 		processEvents();
 		update();
 		render();
+		if (frameDelay > frameTime)
+		{
+			SDL_Delay(frameDelay - frameTime);
+		}
 	}
 }
 
@@ -64,9 +62,9 @@ void Game::processEvents()
 		//Adjust the velocity
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_ESCAPE:
-			SDL_Quit();
-			isRunning = false;
+		case SDLK_ESCAPE: 
+			SDL_Quit(); 
+			m_isRunning = false;
 			break;
 		case SDLK_SPACE:
 		{
@@ -88,7 +86,7 @@ void Game::processEvents()
 	switch (event.type)
 	{
 	case SDL_QUIT:
-		isRunning = false;
+		m_isRunning = false;
 		break;
 	default:
 		break;
