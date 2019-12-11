@@ -25,6 +25,9 @@ Game::Game()
 		std::cout << error << std::endl;
 		m_isRunning = false;
 	}
+
+	m_localPosX = m_playerDot.GetCenterX();
+	m_localPosY = m_playerDot.GetCenterY();
 }
 
 Game::~Game()
@@ -101,10 +104,6 @@ void Game::update()
 {
 	//update things here
 	m_playerDot.move(600, 800);
-
-	m_localPosX = m_playerDot.GetCenterX();
-	m_localPosY = m_playerDot.GetCenterY();
-
 	m_otherDot.move(600, 800);
 
 	bool collisionDetected = false;
@@ -121,7 +120,12 @@ void Game::update()
 		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 		{
 			m_timeSinceLastSend = SDL_GetTicks();
-			m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
+			if (m_localPosX != m_playerDot.GetCenterX() || m_localPosY != m_playerDot.GetCenterY())
+			{
+				m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
+				m_localPosX = m_playerDot.GetCenterX();
+				m_localPosY = m_playerDot.GetCenterY();
+			}
 			if (collisionDetected)
 			{
 				m_gch.sendWinData();
@@ -155,7 +159,7 @@ void Game::cleanup()
 
 void Game::processGameData()
 {
-	if (m_gch.getGameData() != "")
+	if (!m_gch.getGameData().empty())
 	{
 		std::string& gameData = m_gch.getGameData();
 		std::vector<std::string> tokens;
