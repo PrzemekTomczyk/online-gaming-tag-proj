@@ -30,7 +30,7 @@ private:
 	SDL_Texture* m_texture;
 
 	// if game loop is happening
-	bool isRunning;
+	bool m_isRunning;
 
 	Dot m_playerDot;
 	Dot m_otherDot;
