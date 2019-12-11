@@ -33,9 +33,6 @@ private:
 	// used for drawing things onto the screen
 	SDL_Renderer* m_renderer;
 
-	// texture
-	SDL_Texture* m_texture;
-
 	// if game loop is happening
 	bool m_isRunning;
 
@@ -44,8 +41,9 @@ private:
 
 	int m_localPosX, m_localPosY;
 
-	Dot m_playerDot;
-	Dot m_otherDot;
+	Dot m_redDot;
+	Dot m_blueDot;
+	Dot* m_playerDot;
 
 	GameClientHandler m_gch;
 
@@ -64,5 +62,4 @@ private:
 
 	bool m_gameOver;
 	SDL_Rect m_textRect;
-
 };

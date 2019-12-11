@@ -135,7 +135,6 @@ void Client::PacketSenderThread(Client& client) //Thread for all outgoing packet
 				break;
 			}
 		}
-		//Sleep(5);
 	}
 	std::cout << "Packet thread closing..." << std::endl;
 }

@@ -68,6 +68,35 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 		std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
+	case PacketType::ConnectionData: //Packet Type: gameData
+	{
+		std::string connectData; //string to store our connectData we received
+		//if (!GetString(connection, connectData)) //Get the connectData and store it in variable: connectData
+		//	return false; //If we do not properly get the connectData, return false
+						  //Next we need to send the connectData out to each user
+
+		{
+			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+
+			//if this packet is received and we only ahve 1 user
+			//then this user should be host
+			if (1 == m_connections.size())
+			{
+				connectData = "host";
+			}
+			else
+			{
+				connectData = "guest";
+			}
+
+			PS::ConnectionData cd(connectData);
+			std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+			connection->m_pm.Append(msgPacket);
+
+		}
+		std::cout << "Processed connectData packet from user ID: " << connection->m_ID << std::endl;
+		break;
+	}
 	case PacketType::FileTransferRequestFile:
 	{
 		std::string fileName; //string to store file name

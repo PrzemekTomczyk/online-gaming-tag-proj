@@ -62,58 +62,28 @@ void Dot::init(SDL_Renderer* gRenderer)
 
 void Dot::handleEvent(SDL_Event& e)
 {
-	if (m_isChaser)
+	//If a key was pressed
+	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
 	{
-		//If a key was pressed
-		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+		//Adjust the velocity
+		switch (e.key.keysym.sym)
 		{
-			//Adjust the velocity
-			switch (e.key.keysym.sym)
-			{
-			case SDLK_w: m_velY -= DOT_VEL; break;
-			case SDLK_s: m_velY += DOT_VEL; break;
-			case SDLK_a: m_velX -= DOT_VEL; break;
-			case SDLK_d: m_velX += DOT_VEL; break;
-			}
-		}
-		//If a key was released
-		else if (e.type == SDL_KEYUP && e.key.repeat == 0)
-		{
-			//Adjust the velocity
-			switch (e.key.keysym.sym)
-			{
-			case SDLK_w: m_velY += DOT_VEL; break;
-			case SDLK_s: m_velY -= DOT_VEL; break;
-			case SDLK_a: m_velX += DOT_VEL; break;
-			case SDLK_d: m_velX -= DOT_VEL; break;
-			}
+		case SDLK_w: m_velY -= DOT_VEL; break;
+		case SDLK_s: m_velY += DOT_VEL; break;
+		case SDLK_a: m_velX -= DOT_VEL; break;
+		case SDLK_d: m_velX += DOT_VEL; break;
 		}
 	}
-	else if (!m_isChaser)
+	//If a key was released
+	else if (e.type == SDL_KEYUP && e.key.repeat == 0)
 	{
-		//If a key was pressed
-		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+		//Adjust the velocity
+		switch (e.key.keysym.sym)
 		{
-			//Adjust the velocity
-			switch (e.key.keysym.sym)
-			{
-			case SDLK_UP: m_velY -= DOT_VEL; break;
-			case SDLK_DOWN: m_velY += DOT_VEL; break;
-			case SDLK_LEFT: m_velX -= DOT_VEL; break;
-			case SDLK_RIGHT: m_velX += DOT_VEL; break;
-			}
-		}
-		//If a key was released
-		else if (e.type == SDL_KEYUP && e.key.repeat == 0)
-		{
-			//Adjust the velocity
-			switch (e.key.keysym.sym)
-			{
-			case SDLK_UP: m_velY += DOT_VEL; break;
-			case SDLK_DOWN: m_velY -= DOT_VEL; break;
-			case SDLK_LEFT: m_velX += DOT_VEL; break;
-			case SDLK_RIGHT: m_velX -= DOT_VEL; break;
-			}
+		case SDLK_w: m_velY += DOT_VEL; break;
+		case SDLK_s: m_velY -= DOT_VEL; break;
+		case SDLK_a: m_velX += DOT_VEL; break;
+		case SDLK_d: m_velX -= DOT_VEL; break;
 		}
 	}
 }

@@ -3,9 +3,9 @@
 
 Game::Game()
 	:
-	m_playerDot{ true },
-	m_otherDot{ false },
 	m_gameOver{false},
+	m_redDot{ true },
+	m_blueDot{ false },
 	WINDOW_WIDTH(800),
 	WINDOW_HEIGHT(600),
 	PORT_NUM(1111)
@@ -33,8 +33,8 @@ Game::Game()
 		m_textRect.y = 0;
 		m_textRect.w = 600;
 		m_textRect.h = 250;
-		m_playerDot.init(m_renderer);
-		m_otherDot.init(m_renderer);
+		m_redDot.init(m_renderer);
+		m_blueDot.init(m_renderer);
 	}
 	catch (std::string error)
 	{
@@ -42,8 +42,13 @@ Game::Game()
 		m_isRunning = false;
 	}
 
-	m_localPosX = m_playerDot.GetCenterX();
-	m_localPosY = m_playerDot.GetCenterY();
+	m_localPosX = m_redDot.GetCenterX();
+	m_localPosY = m_redDot.GetCenterY();
+
+	//#############################################################
+	//temporarily hardcode redDot to be the player!
+	m_playerDot = &m_redDot;
+	//#############################################################
 }
 
 Game::~Game()
@@ -132,9 +137,11 @@ void Game::processEvents()
 	}
 	if (!m_gameOver)
 	{
-		m_playerDot.handleEvent(event);
-		m_otherDot.handleEvent(event);
+		m_redDot.handleEvent(event);
+		m_blueDot.handleEvent(event);
 	}
+
+
 }
 
 void Game::update()
@@ -142,31 +149,38 @@ void Game::update()
 	//update things here
 	if (!m_gameOver)
 	{
+	m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-		m_playerDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
-		m_otherDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		bool collisionDetected = false;
-
-		if (m_playerDot.collisionDetection(m_otherDot))
-		{
-			collisionDetected = true;
-		}
+	if (m_redDot.collisionDetection(m_blueDot))
+	{
+		collisionDetected = true;
+	}
 
 
 		if (m_gch.isConnected())
 		{
 			//we online bois
 			if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
+			m_timeSinceLastSend = SDL_GetTicks();
+			if (m_localPosX != m_redDot.GetCenterX() || m_localPosY != m_redDot.GetCenterY())
+			{
+				m_gch.sendGameData(m_redDot.GetCenterX(), m_redDot.GetCenterY());
+				m_localPosX = m_redDot.GetCenterX();
+				m_localPosY = m_redDot.GetCenterY();
+			}
+			if (collisionDetected)
 			{
 				if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 				{
 					m_timeSinceLastSend = SDL_GetTicks();
-					if (m_localPosX != m_playerDot.GetCenterX() || m_localPosY != m_playerDot.GetCenterY())
+					if (m_localPosX != m_playerDot->GetCenterX() || m_localPosY != m_playerDot->GetCenterY())
 					{
-						m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
-						m_localPosX = m_playerDot.GetCenterX();
-						m_localPosY = m_playerDot.GetCenterY();
+						m_gch.sendGameData(m_playerDot->GetCenterX(), m_playerDot->GetCenterY());
+						m_localPosX = m_playerDot->GetCenterX();
+						m_localPosY = m_playerDot->GetCenterY();
 					}
 					if (collisionDetected)
 					{
@@ -185,19 +199,19 @@ void Game::render()
 	SDL_RenderClear(m_renderer);
 
 	//render things here
-	m_playerDot.render(m_renderer);
-	m_otherDot.render(m_renderer);
+
 	if (m_gameOver)
 	{
 		SDL_RenderCopy(m_renderer, m_textTexture, NULL, &m_textRect);
 	}
+	m_redDot.render(m_renderer);
+	m_blueDot.render(m_renderer);
 
 	SDL_RenderPresent(m_renderer);
 }
 
 void Game::cleanup()
 {
-	SDL_DestroyTexture(m_texture);
 	SDL_DestroyTexture(m_textTexture);
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
@@ -227,7 +241,7 @@ void Game::processGameData()
 			posVec.push_back(pos);
 		}
 
-		m_otherDot.SetPosition(posVec[0], posVec[1]);
+		m_blueDot.SetPosition(posVec[0], posVec[1]);
 	}
 }
 
@@ -259,8 +273,8 @@ void Game::restart()
 {
 	m_gameOver = false;
 	gameStartTime = SDL_GetTicks();
-	m_playerDot.SetPosition(50,50);
-	m_otherDot.SetPosition(750, 550);
+	m_redDot.SetPosition(50,50);
+	m_blueDot.SetPosition(750, 550);
 }
 
 std::string Game::getErrorString(std::string t_errorMsg)
