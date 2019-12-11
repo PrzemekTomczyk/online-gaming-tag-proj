@@ -2,9 +2,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
-#include <iostream>
+#include <sstream>
+#include <vector>
+#include <iterator>
 #include "Dot.h"
-//#include "GameClientHandler.h"
+#include "GameClientHandler.h"
 
 class Game
 {
@@ -19,6 +21,7 @@ private:
 	void update();
 	void render();
 	void cleanup();
+	void processGameData();
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -32,9 +35,12 @@ private:
 	// if game loop is happening
 	bool isRunning;
 
+	unsigned int m_timeSinceLastSend = 0;
+	const bool SEND_DELAY = 50;
+
 	Dot m_playerDot;
 	Dot m_otherDot;
 
-	//GameClientHandler m_gch;
+	GameClientHandler m_gch;
 
 };

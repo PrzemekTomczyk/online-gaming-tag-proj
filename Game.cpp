@@ -1,9 +1,10 @@
 #include "Game.h"
 
+
 Game::Game()
 	:
-	m_playerDot{true},
-	m_otherDot{false}
+	m_playerDot{ true },
+	m_otherDot{ false }
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
@@ -63,13 +64,21 @@ void Game::processEvents()
 		//Adjust the velocity
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_ESCAPE: 
-			SDL_Quit(); 
+		case SDLK_ESCAPE:
+			SDL_Quit();
 			isRunning = false;
 			break;
 		case SDLK_SPACE:
-			//m_gch.connectToServer("127.0.0.1", 1111);
+		{
+			if (m_gch.isConnected())
+			{
+				m_gch.disconnect();
+			}
+			std::string ip;
+			std::cin >> ip;
+			m_gch.connectToServer(ip, 1111);
 			break;
+		}
 		default:
 			break;
 		}
@@ -95,12 +104,21 @@ void Game::update()
 	m_playerDot.move(600, 800);
 	m_otherDot.move(600, 800);
 
+	if (m_gch.isConnected())
+	{
+		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
+		{
+			m_timeSinceLastSend = SDL_GetTicks();
+			m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
+		}
+		processGameData();
+	}
 }
 
 void Game::render()
 {
 	SDL_RenderClear(m_renderer);
-	
+
 	//render things here
 	m_playerDot.render(m_renderer);
 	m_otherDot.render(m_renderer);
@@ -114,6 +132,33 @@ void Game::cleanup()
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
 	SDL_QUIT;
+}
+
+void Game::processGameData()
+{
+	if (m_gch.getGameData() != "")
+	{
+		std::string& gameData = m_gch.getGameData();
+		std::vector<std::string> tokens;
+		std::size_t start = 0, end = 0;
+		while ((end = gameData.find(",", start)) != std::string::npos) {
+			tokens.push_back(gameData.substr(start, end - start));
+			start = end + 1;
+		}
+		tokens.push_back(gameData.substr(start));
+
+		std::vector<int> posVec;
+
+		for (int i = 0; i < tokens.size(); i++)
+		{
+			std::stringstream ss(tokens.at(i));
+			int pos;
+			ss >> pos;
+			posVec.push_back(pos);
+		}
+
+		m_otherDot.SetPosition(posVec[0], posVec[1]);
+	}
 }
 
 std::string Game::getErrorString(std::string t_errorMsg)

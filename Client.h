@@ -4,21 +4,21 @@
 #include "FileTransferData.h" //For FileTransferData class
 #include "PacketManager.h" //For PacketManager class
 
-//test?
-
 class Client
 {
 public: //Public functions
-	Client(const char * ip, const int port);
+	Client(const char * ip, const int port, std::string& t_gameData);
 	bool Connect();
 	void Disconnect();
 	void SendString(const std::string & str);
 	void SendGameData(const std::string& t_data);
 	bool RequestFile(const std::string & fileName);
+	bool getConnected();
 	~Client();
 private: //Private functions
 	bool CloseConnection();
 	bool ProcessPacketType(const PacketType packetType);
+	//bool ProcessGamePacketType(const PacketType packetType);
 	static void ClientThread(Client & client); //Client thread which reads messages from server
 	static void PacketSenderThread(Client & client); //Packet sender thread which sends out packets existing in packet manager
 	//Sending Funcs
@@ -38,4 +38,6 @@ private: //Private variables
 
 	std::thread m_pst; //Create thread to send packets
 	std::thread m_ct; //Create thread to listen to server
+
+	std::string& m_gameData;
 };

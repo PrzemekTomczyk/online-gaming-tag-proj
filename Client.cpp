@@ -15,6 +15,15 @@ bool Client::ProcessPacketType(PacketType packetType)
 		std::cout << Message << std::endl; //Display the message to the user
 		break;
 	}
+	case PacketType::GameData:
+	{
+		std::string gameData; //string to store our message we received
+		if (!GetString(gameData)) //Get the chat message and store it in variable: Message
+			return false; //If we do not properly get the chat message, return false
+		m_gameData = gameData; //Display the message to the user
+		std::cout << m_gameData << std::endl;
+		break;
+	}
 	case PacketType::FileTransferByteBuffer:
 	{
 		std::int32_t buffersize; //buffer to hold size of buffer to write to file
@@ -47,7 +56,7 @@ bool Client::ProcessPacketType(PacketType packetType)
 	return true;
 }
 
-void Client::ClientThread(Client & client)
+void Client::ClientThread(Client& client)
 {
 	PacketType PacketType;
 	while (true)
@@ -71,7 +80,7 @@ void Client::ClientThread(Client & client)
 	}
 }
 
-bool Client::RequestFile(const std::string & fileName)
+bool Client::RequestFile(const std::string& fileName)
 {
 	if (m_file.m_transferInProgress)
 	{
@@ -96,7 +105,12 @@ bool Client::RequestFile(const std::string & fileName)
 	return true;
 }
 
-void Client::PacketSenderThread(Client & client) //Thread for all outgoing packets
+bool Client::getConnected()
+{
+	return m_isConnected;
+}
+
+void Client::PacketSenderThread(Client& client) //Thread for all outgoing packets
 {
 	while (true)
 	{
@@ -121,4 +135,5 @@ void Client::Disconnect()
 	m_pm.Clear();
 	closesocket(m_connection);
 	std::cout << "Disconnected from server." << std::endl;
+	m_isConnected = false;
 }
