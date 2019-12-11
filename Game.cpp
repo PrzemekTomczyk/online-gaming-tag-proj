@@ -5,13 +5,16 @@ Game::Game()
 	:
 	m_playerDot{ true },
 	m_otherDot{ false },
-	m_gameOver{false}
+	m_gameOver{false},
+	WINDOW_WIDTH(800),
+	WINDOW_HEIGHT(600),
+	PORT_NUM(1111)
 {
 	try
 	{
 		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) throw "Error Loading SDL";
 		if (TTF_Init() < 0) throw "Error Loading SDL TTF";
-		m_window = SDL_CreateWindow("Final Year Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, NULL);
+		m_window = SDL_CreateWindow("Tag, You're it!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, NULL);
 		if (!m_window) throw "Error Loading Window";
 
 		m_renderer = SDL_CreateRenderer(m_window, -1, 0);
@@ -22,14 +25,16 @@ Game::Game()
 		if (!m_font) throw "Error Loading Font";
 
 		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+
+
 		m_isRunning = true;
-		m_playerDot.Init(m_renderer);
-		m_otherDot.Init(m_renderer);
 		gameStartTime = SDL_GetTicks();
 		m_textRect.x = 0;
 		m_textRect.y = 0;
 		m_textRect.w = 600;
 		m_textRect.h = 250;
+		m_playerDot.init(m_renderer);
+		m_otherDot.init(m_renderer);
 	}
 	catch (std::string error)
 	{
@@ -77,8 +82,12 @@ void Game::processEvents()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_ESCAPE:
+			m_gch.disconnect();
 			SDL_Quit();
 			m_isRunning = false;
+			break;
+		case SDLK_BACKSPACE:
+			m_gch.disconnect();
 			break;
 		case SDLK_SPACE:
 		{
@@ -89,7 +98,7 @@ void Game::processEvents()
 			std::cout << "Connect to IP: ";
 			std::string ip;
 			std::getline(std::cin, ip);
-			m_gch.connectToServer(ip, 1111);
+			m_gch.connectToServer(ip, PORT_NUM);
 			break;
 		}
 		case SDLK_r:
@@ -113,7 +122,6 @@ void Game::processEvents()
 		}
 	}
 
-
 	switch (event.type)
 	{
 	case SDL_QUIT:
@@ -134,8 +142,9 @@ void Game::update()
 	//update things here
 	if (!m_gameOver)
 	{
-		m_playerDot.move(600, 800);
-		m_otherDot.move(600, 800);
+
+		m_playerDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_otherDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		bool collisionDetected = false;
 
@@ -147,26 +156,28 @@ void Game::update()
 
 		if (m_gch.isConnected())
 		{
+			//we online bois
 			if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 			{
-				m_timeSinceLastSend = SDL_GetTicks();
-				if (m_localPosX != m_playerDot.GetCenterX() || m_localPosY != m_playerDot.GetCenterY())
+				if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
 				{
-					m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
-					m_localPosX = m_playerDot.GetCenterX();
-					m_localPosY = m_playerDot.GetCenterY();
+					m_timeSinceLastSend = SDL_GetTicks();
+					if (m_localPosX != m_playerDot.GetCenterX() || m_localPosY != m_playerDot.GetCenterY())
+					{
+						m_gch.sendGameData(m_playerDot.GetCenterX(), m_playerDot.GetCenterY());
+						m_localPosX = m_playerDot.GetCenterX();
+						m_localPosY = m_playerDot.GetCenterY();
+					}
+					if (collisionDetected)
+					{
+						m_gch.sendWinData();
+					}
 				}
-				if (collisionDetected)
-				{
-					m_gch.sendWinData();
-				}
+				processGameData();
+				processWinData();
 			}
-			processGameData();
-			processWinData();
 		}
 	}
-
-
 }
 
 void Game::render()

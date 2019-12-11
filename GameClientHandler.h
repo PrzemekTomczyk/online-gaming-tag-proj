@@ -15,6 +15,7 @@ public:
 	bool isConnected();
 	void sendGameData(int t_posX, int t_posY);
 	void sendWinData();
+
 private:
 	std::string m_gameData;
 	std::string m_winData;

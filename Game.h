@@ -49,6 +49,10 @@ private:
 
 	GameClientHandler m_gch;
 
+	//consts
+	const int WINDOW_WIDTH;
+	const int WINDOW_HEIGHT;
+	const int PORT_NUM;
 	bool m_isHost;
 
 	int gameStartTime;

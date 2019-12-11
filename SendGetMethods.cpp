@@ -71,3 +71,9 @@ bool Client::GetString(std::string& str)
 	str.resize(bufferlength); //resize string to fit message
 	return recvall(&str[0], bufferlength);
 }
+
+void Client::joinThreads()
+{
+	m_pst.join();
+	m_ct.join();
+}

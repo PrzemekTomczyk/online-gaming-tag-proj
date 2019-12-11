@@ -42,7 +42,7 @@ bool Dot::collisionDetection(Dot& t_otherDot)
 }
 
 //"dot.bmp"
-void Dot::Init(SDL_Renderer* gRenderer)
+void Dot::init(SDL_Renderer* gRenderer)
 {
 	if (m_isChaser)
 	{
@@ -118,7 +118,7 @@ void Dot::handleEvent(SDL_Event& e)
 	}
 }
 
-void Dot::move(int SCREEN_HEIGHT, int SCREEN_WIDTH)
+void Dot::move(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	//Move the dot left or right
 	m_posX += m_velX;
@@ -150,7 +150,7 @@ void Dot::render(SDL_Renderer* gRenderer)
 	m_dotTexture.render(m_posX, m_posY, gRenderer);
 }
 
-std::string Dot::GetPosAsString()
+std::string Dot::getPosAsString()
 {
 	return std::string("X: " + std::to_string(m_posX) + ", " + "Y: " + std::to_string(m_posY));
 }

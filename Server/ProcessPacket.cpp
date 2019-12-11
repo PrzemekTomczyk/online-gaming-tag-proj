@@ -12,8 +12,8 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 		std::string message; //string to store our message we received
 		if (!GetString(connection, message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
-						  //Next we need to send the message out to each user
 
+		//Next we need to send the message out to each user
 		PS::ChatMessage cm(message);
 		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cm.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
 		{

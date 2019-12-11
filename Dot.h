@@ -17,7 +17,7 @@ public:
 	Dot(bool chaser);
 	~Dot();
 
-	void Init(SDL_Renderer *gRenderer);
+	void init(SDL_Renderer *gRenderer);
 	//Takes key presses and adjusts the dot's velocity
 	void handleEvent(SDL_Event& e);
 
@@ -27,7 +27,7 @@ public:
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer);
 
-	std::string GetPosAsString();
+	std::string getPosAsString();
 
 	bool Checkcollision(int centerX, int centerY);
 

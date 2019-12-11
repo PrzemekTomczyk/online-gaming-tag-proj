@@ -29,6 +29,7 @@ private: //Private functions
 	bool Getint32_t(std::int32_t & int32_t);
 	bool GetPacketType(PacketType & packetType);
 	bool GetString(std::string & str);
+	void joinThreads();
 private: //Private variables
 	bool m_terminateThreads = false;
 	bool m_isConnected = false;
