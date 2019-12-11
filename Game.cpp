@@ -115,8 +115,13 @@ void Game::processEvents()
 void Game::update()
 {
 	//update things here
-	m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	//m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	if (m_playerDot)
+	{
+		m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	}
 
 	bool collisionDetected = false;
 
