@@ -2,7 +2,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
-#include <iostream>
+#include <sstream>
+#include <vector>
+#include <iterator>
 #include "Dot.h"
 #include "GameClientHandler.h"
 
@@ -19,6 +21,8 @@ private:
 	void update();
 	void render();
 	void cleanup();
+	void processGameData();
+	void processWinData();
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -30,9 +34,12 @@ private:
 	SDL_Texture* m_texture;
 
 	// if game loop is happening
-	bool isRunning;
-	//if game connected to server successfully
-	bool m_connectedSuccessfully;
+	bool m_isRunning;
+
+	unsigned int m_timeSinceLastSend = 0;
+	const bool SEND_DELAY = 50;
+
+	int m_localPosX, m_localPosY;
 
 	Dot m_playerDot;
 	Dot m_otherDot;
@@ -43,6 +50,6 @@ private:
 	const int WINDOW_WIDTH;
 	const int WINDOW_HEIGHT;
 	const int PORT_NUM;
-	const std::string LOCAL_HOST = "127.0.0.1";
+	bool m_isHost;
 
 };

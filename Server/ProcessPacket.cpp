@@ -28,25 +28,44 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 		std::cout << "Processed chat message packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
-	case PacketType::GameData: //Packet Type: GameData
+	case PacketType::GameData: //Packet Type: gameData
 	{
-		std::string message; //string to store our GameData we received
-		if (!GetString(connection, message)) //Get the GameData and store it in variable: Message
-			return false; //If we do not properly get the GameData, return false
+		std::string gameData; //string to store our gameData we received
+		if (!GetString(connection, gameData)) //Get the gameData and store it in variable: gameData
+			return false; //If we do not properly get the gameData, return false
+						  //Next we need to send the gameData out to each user
 
-		//Next we need to send the message out to each user
-		PS::GameData gd(message);
-		std::shared_ptr<Packet> gdPacket = std::make_shared<Packet>(gd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+		PS::GameData gd(gameData);
+		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(gd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
 		{
 			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
 			for (auto conn : m_connections) //For each connection...
 			{
-				if (conn == connection) //If connection is the user who sent the message...
-					continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
-				conn->m_pm.Append(gdPacket);
+				if (conn == connection) //If connection is the user who sent the gameData...
+					continue;//Skip to the next user since there is no purpose in sending the gameData back to the user who sent it.
+				conn->m_pm.Append(msgPacket);
 			}
 		}
-		std::cout << "Processed GameData packet from user ID: " << connection->m_ID << std::endl;
+		std::cout << "Processed gameData packet from user ID: " << connection->m_ID << std::endl;
+		break;
+	}
+	case PacketType::WinData:
+	{
+		std::string winData;
+		if (!GetString(connection, winData))
+			return false;
+		PS::WinData wd(winData);
+		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(wd.toPacket());
+		{
+			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+			for (auto conn : m_connections)
+			{
+				if (conn == connection)
+					continue;
+				conn->m_pm.Append(msgPacket);
+			}
+		}
+		std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
 	case PacketType::FileTransferRequestFile:

@@ -3,7 +3,9 @@
 #pragma comment(lib,"ws2_32.lib") //Required for WinSock
 #include <iostream> //for std::cout
 
-Client::Client(const char * ip, const int port)
+Client::Client(const char * ip, const int port, std::string& t_gameData, std::string& t_winData) :
+	m_gameData(t_gameData),
+	m_winData(t_winData)
 {
 	//Winsock Startup
 	WSAData wsaData;
@@ -26,10 +28,12 @@ bool Client::Connect()
 	if (connect(m_connection, (SOCKADDR*)&m_addr, sizeofaddr) != 0) //If we are unable to connect...
 	{
 		MessageBoxA(0, "Failed to Connect", "Error", MB_OK | MB_ICONERROR);
+		m_isConnected = false;
 		return false;
 	}
 
 	std::cout << "Connected!" << std::endl;
+	m_isConnected = true;
 	m_pst = std::thread(PacketSenderThread, std::ref(*this)); //Create thread to send packets
 	m_pst.detach();
 	m_ct = std::thread(ClientThread, std::ref(*this)); //Create thread to listen to server
@@ -55,6 +59,4 @@ bool Client::CloseConnection()
 Client::~Client()
 {
 	CloseConnection();
-	m_pst.join();
-	m_ct.join();
 }

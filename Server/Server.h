@@ -33,6 +33,7 @@ private: //Private functions
 	bool GetPacketType(std::shared_ptr<Connection> connection, PacketType & packetType);
 	void SendString(std::shared_ptr<Connection> connection, const std::string & str);
 	void SendGameData(std::shared_ptr<Connection> connection, const std::string& t_data);
+	void SendWinData(std::shared_ptr<Connection> connection, const std::string& t_data);
 	bool GetString(std::shared_ptr<Connection> connection, std::string & str);
 	bool ProcessPacket(std::shared_ptr<Connection> connection, PacketType packetType);
 	static void ClientHandlerThread(Server & server, std::shared_ptr<Connection> connection);

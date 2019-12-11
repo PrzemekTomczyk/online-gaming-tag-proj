@@ -1,5 +1,6 @@
 #pragma once
 #include "LTexture.h"
+#include <cmath>
 
 class Dot
 {
@@ -9,7 +10,7 @@ public:
 	static const int DOT_HEIGHT = 20;
 
 	//Maximum axis velocity of the dot
-	static const int DOT_VEL = 10;
+	static const int DOT_VEL = 5;
 
 	Dot() {};
 	//Initializes the variables
@@ -30,16 +31,18 @@ public:
 
 	bool Checkcollision(int centerX, int centerY);
 
-	bool GetLocal() { return isLocalplayer; };
+	bool GetLocal() { return m_isLocalplayer; };
 
 	int GetCenterX();
 	int GetCenterY();
 
 	void SetPosition(int x, int y);
 
+	bool collisionDetection(Dot& t_otherDot);
+
 private:
-	bool isLocalplayer;
-	bool isChaser;
+	bool m_isLocalplayer;
+	bool m_isChaser;
 
 	//The X and Y offsets of the dot
 	int m_posX, m_posY;
@@ -48,5 +51,5 @@ private:
 	//The velocity of the dot
 	int m_velX, m_velY;
 
-	LTexture m_gDotTexture;
+	LTexture m_dotTexture;
 };

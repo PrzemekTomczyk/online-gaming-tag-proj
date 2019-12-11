@@ -15,12 +15,22 @@ bool Client::ProcessPacketType(PacketType packetType)
 		std::cout << Message << std::endl; //Display the message to the user
 		break;
 	}
-	case PacketType::GameData: //If PacketType is a chat message PacketType
+	case PacketType::GameData:
 	{
-		std::string gameData; //string to store GameData we received
-		if (!GetString(gameData)) //Get the GameData and store it in variable: GameData
+		std::string gameData; //string to store our message we received
+		if (!GetString(gameData)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
-		std::cout << gameData << std::endl; //Display the gameData to the user
+		m_gameData = gameData; //Display the message to the user
+		std::cout << m_gameData << std::endl;
+		break;
+	}
+	case PacketType::WinData:
+	{
+		std::string winData;
+		if (!GetString(winData))
+			return false;
+		m_winData = winData;
+		std::cout << m_winData << std::endl;
 		break;
 	}
 	case PacketType::FileTransferByteBuffer:
@@ -55,26 +65,7 @@ bool Client::ProcessPacketType(PacketType packetType)
 	return true;
 }
 
-std::string Client::ProcessGamePacket(const PacketType packetType)
-{
-	switch (packetType)
-	{
-	case PacketType::GameData: //If PacketType is a chat message PacketType
-	{
-		std::string gameData; //string to store GameData we received
-		if (!GetString(gameData)) //Get the GameData and store it in variable: GameData
-			return "data received"; //If we do not properly get the chat message, return false
-		std::cout << gameData << std::endl; //Display the gameData to the user
-		break;
-	}
-	default: //If PacketType type is not accounted for
-		std::cout << "Packet is not of type GameData, PacketType is: " << (std::int32_t)packetType << std::endl; //Display that PacketType was not found
-		break;
-	}
-	return "no data";
-}
-
-void Client::ClientThread(Client & client)
+void Client::ClientThread(Client& client)
 {
 	PacketType PacketType;
 	while (true)
@@ -99,7 +90,7 @@ void Client::ClientThread(Client & client)
 	}
 }
 
-bool Client::RequestFile(const std::string & fileName)
+bool Client::RequestFile(const std::string& fileName)
 {
 	if (m_file.m_transferInProgress)
 	{
@@ -124,7 +115,12 @@ bool Client::RequestFile(const std::string & fileName)
 	return true;
 }
 
-void Client::PacketSenderThread(Client & client) //Thread for all outgoing packets
+bool Client::getConnected()
+{
+	return m_isConnected;
+}
+
+void Client::PacketSenderThread(Client& client) //Thread for all outgoing packets
 {
 	while (true)
 	{
@@ -149,4 +145,5 @@ void Client::Disconnect()
 	m_pm.Clear();
 	closesocket(m_connection);
 	std::cout << "Disconnected from server." << std::endl;
+	m_isConnected = false;
 }

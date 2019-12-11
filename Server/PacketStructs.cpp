@@ -38,4 +38,18 @@ namespace PS
 		p->Append(m_message);
 		return p;
 	}
+
+	WinData::WinData(const std::string& t_msg) :
+		m_message(t_msg)
+	{
+	}
+	
+	std::shared_ptr<Packet> WinData::toPacket()
+	{
+		std::shared_ptr<Packet> packet = std::make_shared<Packet>();
+		packet->Append(PacketType::WinData);
+		packet->Append(m_message.size());
+		packet->Append(m_message);
+		return packet;
+	}
 }

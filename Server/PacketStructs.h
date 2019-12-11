@@ -33,4 +33,13 @@ namespace PS //Packet Structures Namespace
 		//Game data to be sent to the server
 		std::string m_message;
 	};
+
+	class WinData
+	{
+	public:
+		WinData(const std::string& t_str);
+		std::shared_ptr<Packet> toPacket();
+	private:
+		std::string m_message;
+	};
 }

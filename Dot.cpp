@@ -2,7 +2,7 @@
 
 Dot::Dot(bool chaser)
 {
-	isChaser = chaser;
+	m_isChaser = chaser;
 	//Initialize the offsets
 	m_posX = 0;
 	m_posY = 0;
@@ -11,43 +11,49 @@ Dot::Dot(bool chaser)
 	m_velX = 0;
 	m_velY = 0;
 
-	if (isChaser)
+	if (m_isChaser)
 	{
-		m_gDotTexture.setColor(244, 66, 66);
+		m_dotTexture.setColor(244, 66, 66);
 	}
 	else
 	{
-		m_gDotTexture.setColor(66, 69, 244);
+		m_dotTexture.setColor(66, 69, 244);
 	}
 }
 
 Dot::~Dot()
 {
-	m_gDotTexture.free();
+	m_dotTexture.free();
 }
 
 void Dot::SetPosition(int x, int y)
 {
-	m_posX = x;
-	m_posY = y;
+	m_centerX = x;
+	m_centerY = y;
+	
+	m_posX = m_centerX - (DOT_WIDTH / 2);
+	m_posY = m_centerY - (DOT_HEIGHT / 2);
+}
 
-	m_centerX = m_posX + (DOT_WIDTH / 2);
-	m_centerY = m_posY + (DOT_HEIGHT / 2);
+bool Dot::collisionDetection(Dot& t_otherDot)
+{
+	float distanceBetween = sqrt(std::pow(t_otherDot.m_centerX - m_centerX, 2.0f) + std::pow(t_otherDot.m_centerY - m_centerY, 2.0f));
+	return distanceBetween <= DOT_HEIGHT;
 }
 
 //"dot.bmp"
 void Dot::init(SDL_Renderer* gRenderer)
 {
-	if (isChaser)
+	if (m_isChaser)
 	{
-		if (!m_gDotTexture.loadFromFile("assets/reddot.bmp", gRenderer))
+		if (!m_dotTexture.loadFromFile("assets/reddot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
 		}
 	}
 	else
 	{
-		if (!m_gDotTexture.loadFromFile("assets/bluedot.bmp", gRenderer))
+		if (!m_dotTexture.loadFromFile("assets/bluedot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
 		}
@@ -56,7 +62,7 @@ void Dot::init(SDL_Renderer* gRenderer)
 
 void Dot::handleEvent(SDL_Event& e)
 {
-	if (isChaser)
+	if (m_isChaser)
 	{
 		//If a key was pressed
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
@@ -83,7 +89,7 @@ void Dot::handleEvent(SDL_Event& e)
 			}
 		}
 	}
-	else if (!isChaser)
+	else if (!m_isChaser)
 	{
 		//If a key was pressed
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
@@ -141,7 +147,7 @@ void Dot::move(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 void Dot::render(SDL_Renderer* gRenderer)
 {
 	//Show the dot
-	m_gDotTexture.render(m_posX, m_posY, gRenderer);
+	m_dotTexture.render(m_posX, m_posY, gRenderer);
 }
 
 std::string Dot::getPosAsString()
