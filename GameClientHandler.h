@@ -17,4 +17,6 @@ public:
 private:
 	std::string m_gameData;
 	Client* m_client;
+
+	const std::string LOCAL_HOST = "127.0.0.1";
 };
