@@ -149,11 +149,17 @@ void Game::update()
 	//update things here
 	if (!m_gameOver)
 	{
-	m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+	//m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-		bool collisionDetected = false;
+	if (m_playerDot)
+	{
+		m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
+	}
+
+	bool collisionDetected = false;
 	if (m_redDot.collisionDetection(m_blueDot))
 	{
 		collisionDetected = true;
