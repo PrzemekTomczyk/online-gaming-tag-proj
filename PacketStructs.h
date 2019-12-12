@@ -23,36 +23,36 @@ namespace PS //Packet Structures Namespace
 		int m_size; //size of data buffer
 	};
 
-	class GameData
-	{
-	public:
-		/* Add game data to be sent to the server*/
-		GameData(const std::string& t_str);
-		std::shared_ptr<Packet> toPacket();
-	private:
-		//Game data to be sent to the server
-		std::string m_gameData;
-	};
+	//class GameData
+	//{
+	//public:
+	//	/* Add game data to be sent to the server*/
+	//	GameData(const std::string& t_str);
+	//	std::shared_ptr<Packet> toPacket();
+	//private:
+	//	//Game data to be sent to the server
+	//	std::string m_gameData;
+	//};
 
-	class WinData
-	{
-	public:
-		WinData(const std::string& t_str);
-		std::shared_ptr<Packet> toPacket();
-	private:
-		std::string m_message;
-	};
+	//class WinData
+	//{
+	//public:
+	//	WinData(const std::string& t_str);
+	//	std::shared_ptr<Packet> toPacket();
+	//private:
+	//	std::string m_message;
+	//};
 
-	class ConnectData
-	{
-	public:
-		/* Add game data to be sent to the server*/
-		ConnectData(const std::string& t_str);
-		std::shared_ptr<Packet> toPacket();
-	private:
-		//Game data to be sent to the server
-		std::string m_connectData;
-	};
+	//class ConnectData
+	//{
+	//public:
+	//	/* Add game data to be sent to the server*/
+	//	ConnectData(const std::string& t_str);
+	//	std::shared_ptr<Packet> toPacket();
+	//private:
+	//	//Game data to be sent to the server
+	//	std::string m_connectData;
+	//};
 
 
 }

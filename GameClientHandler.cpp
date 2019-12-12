@@ -65,9 +65,9 @@ std::string& GameClientHandler::getWinData()
 	return m_winData;
 }
 
-bool GameClientHandler::getGameStart()
+std::string& GameClientHandler::getStartData()
 {
-	return m_gameStartData == "start";
+	return m_gameStartData;
 }
 
 bool GameClientHandler::isConnected()
@@ -84,23 +84,30 @@ bool GameClientHandler::isConnected()
 
 void GameClientHandler::sendGameData(int t_posX, int t_posY)
 {
-	std::string data = "";
+	std::string data = GAME_DATA;
 	data += std::to_string(t_posX);
 	data += ",";
 	data += std::to_string(t_posY);
-	m_client->SendGameData(data);
+	m_client->SendString(data);
 }
 
-void GameClientHandler::sendWinData()
+void GameClientHandler::sendWinData(int t_ms)
 {
-	std::string data = "Win";
-	m_client->SendWinData(data);
+	std::string data = WIN_DATA;
+	data += t_ms;
+	m_client->SendString(data);
 }
 
 void GameClientHandler::sendConnectData()
 {
-	std::string data = "";
-	m_client->SendConnectData(data);
+	std::string data = CONNECT_DATA;
+	m_client->SendString(data);
+}
+
+void GameClientHandler::sendStartData()
+{
+	std::string data = START_DATA;
+	m_client->SendString(data);
 }
 
 std::string GameClientHandler::getConnectData()

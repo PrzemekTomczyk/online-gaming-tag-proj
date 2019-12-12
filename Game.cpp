@@ -99,10 +99,6 @@ void Game::processEvents()
 		case SDLK_BACKSPACE:
 			m_gch.disconnect();
 			break;
-		case SDLK_RETURN:
-			m_gch.connectToServer("127.0.0.1", PORT_NUM);
-			m_playerDot = &m_hunterDot;
-			break;
 		case SDLK_SPACE:
 		{
 			if (m_gch.isConnected())
@@ -119,20 +115,19 @@ void Game::processEvents()
 			}
 			if (HOST == m_gch.getConnectData())
 			{
+				std::cout << "Host data received" << std::endl;
 				m_playerDot = &m_hunterDot;
 				m_otherPlayerDot = &m_preyDot;
 				m_isHost = true;
 			}
-			else if (!m_isHost)
+			else if (GUEST == m_gch.getConnectData())
 			{
+				std::cout << "Guest data received" << std::endl;
 				m_playerDot = &m_preyDot;
 				m_otherPlayerDot = &m_hunterDot;
 				m_isHost = false;
 				m_gameOver = false;
-			}
-			else
-			{
-				restart();
+				m_gch.sendStartData();
 			}
 			break;
 		}
@@ -160,26 +155,22 @@ void Game::processEvents()
 		break;
 	}
 
-	if (!m_gameOver || m_playerDot)
+	if (!m_gameOver)
 	{
 		m_playerDot->handleEvent(event);
-		//m_preyDot.handleEvent(event);
 	}
 }
 
 void Game::update()
 {
 	//update things here
-	//if (!m_gameOver)
-	//{
-	if (m_playerDot)
+	if (!m_gameOver)
 	{
-		m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
-	}
-
-	if (m_gch.isConnected())
-	{
-		//we online bois
+		if (m_playerDot)
+		{
+			m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		}
+		processGameData();
 
 		bool collisionDetected = false;
 		if (m_isHost)
@@ -198,27 +189,14 @@ void Game::update()
 		}
 		if (collisionDetected && m_isHost)
 		{
-			m_gch.sendWinData();
-			processGameData();
-			processWinData();
+			m_gch.sendWinData(SDL_GetTicks() - gameStartTime);
 
 		}
-
+		processWinData();
 	}
-	else if (HOST != m_gch.getConnectData() && m_isHost && !m_gameStarted)
+	else if (m_isHost)
 	{
-		restart();
-		m_gameStarted = true;
-	}
-	else if (m_playerDot)
-	{
-		m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
-		if (m_localPosX != m_playerDot->GetCenterX() || m_localPosY != m_playerDot->GetCenterY())
-		{
-			m_gch.sendGameData(m_playerDot->GetCenterX(), m_playerDot->GetCenterY());
-			m_localPosX = m_playerDot->GetCenterX();
-			m_localPosY = m_playerDot->GetCenterY();
-		}
+		processStartData();
 	}
 }
 
@@ -276,29 +254,32 @@ void Game::processWinData()
 	if (!m_gch.getWinData().empty())
 	{
 		std::string& winData = m_gch.getWinData();
-		if (winData == "Win")
-		{
-			gameFinished();
-			std::cout << "OUCH!" << std::endl;
-			winData = "";
-			m_isColliding = false;
-		}
+		gameFinished();
+		winData = "";
+		resetStartPos();
+	}
+}
+
+void Game::processStartData()
+{
+	if (!m_gch.getStartData().empty())
+	{
+		std::cout << "Starting game" << std::endl;
+		m_gameOver = false;
 	}
 }
 
 void Game::gameFinished()
 {
-	if (!m_isColliding)
 	{
-		int gameTime = SDL_GetTicks() - gameStartTime;
-		std::string gameOverText = "Collision Detected Time Elapsed:" + std::to_string(gameTime) + " Milliseconds";
+		//int gameTime = SDL_GetTicks() - gameStartTime;
+		std::string gameOverText = "Collision Detected Time Elapsed:" + m_gch.getWinData() + " Milliseconds";
 		m_textMessage = TTF_RenderText_Blended(m_font, gameOverText.c_str(), SDL_Color{ 255,255,0,255 });
 		if (!m_textMessage) std::cout << "Error Loading Surface" << std::endl;
 		m_textTexture = SDL_CreateTextureFromSurface(m_renderer, m_textMessage);
 		if (!m_textTexture) std::cout << "Error Loading Texture" << std::endl;
-		moveDot();
+		//moveDot();
 		gameStartTime = SDL_GetTicks();
-		m_isColliding = true;
 	}
 }
 
@@ -312,7 +293,6 @@ void Game::restart()
 	else
 	{
 		m_playerDot->SetPosition(750, 550);
-
 	}
 }
 
@@ -351,6 +331,21 @@ void Game::boundaryCheck(float& x, float& y)
 	else if (y > WINDOW_HEIGHT)
 	{
 		y = WINDOW_HEIGHT - 20;
+	}
+}
+
+void Game::resetStartPos()
+{
+	m_hunterDot.SetPosition(50, 50);
+	m_preyDot.SetPosition(750, 550);
+
+	if (m_playerDot == &m_hunterDot)
+	{
+		m_playerDot = &m_preyDot;
+	}
+	else
+	{
+		m_playerDot = &m_hunterDot;
 	}
 }
 

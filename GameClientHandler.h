@@ -12,12 +12,13 @@ public:
 	void disconnect();
 	std::string& getGameData();
 	std::string& getWinData();
-	bool getGameStart();
+	std::string& getStartData();
+	std::string getConnectData();
 	bool isConnected();
 	void sendGameData(int t_posX, int t_posY);
-	void sendWinData();
+	void sendWinData(int t_ms);
 	void sendConnectData();
-	std::string getConnectData();
+	void sendStartData();
 
 private:
 	std::string m_gameData;
@@ -27,4 +28,9 @@ private:
 	Client* m_client;
 
 	const std::string LOCAL_HOST = "127.0.0.1";
+	const std::string CONNECT_DATA = "self:cd:";
+	const std::string GAME_DATA = "other:gd:";
+	const std::string START_DATA = "other:sd:";
+	const std::string WIN_DATA = "all:wd:";
+
 };

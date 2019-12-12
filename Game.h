@@ -25,10 +25,12 @@ private:
 	void cleanup();
 	void processGameData();
 	void processWinData();
+	void processStartData();
 	void gameFinished();
 	void restart();
 	void moveDot();
 	void boundaryCheck(float& x, float& y);
+	void resetStartPos();
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -56,6 +58,11 @@ private:
 	const int WINDOW_HEIGHT;
 	const int PORT_NUM;
 	const std::string HOST = "host";
+	const std::string GUEST = "guest";
+	const std::string GAME_DATA = "gd:";
+	const std::string CONNECT_DATA = "cd:";
+	const std::string WIN_DATA = "wd:";
+	const std::string START_DATA = "sd:";
 
 	bool m_isHost;
 	int gameStartTime;

@@ -7,7 +7,7 @@ Client::Client(const char* ip, const int port, std::string& t_gameData, std::str
 	m_gameData(t_gameData),
 	m_winData(t_winData),
 	m_connectData(t_connectionData),
-	m_gameStart(t_gameStartData)
+	m_startData(t_gameStartData)
 {
 	//Winsock Startup
 	WSAData wsaData;

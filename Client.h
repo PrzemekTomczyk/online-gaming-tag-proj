@@ -11,10 +11,10 @@ public: //Public functions
 	bool Connect();
 	void Disconnect();
 	void SendString(const std::string& str);
-	void SendGameData(const std::string& t_data);
-	void SendWinData(const std::string& t_data);
-	void SendConnectData(const std::string& t_data);
-	void SendStartGame(const std::string& t_data);
+	//void SendGameData(const std::string& t_data);
+	//void SendWinData(const std::string& t_data);
+	//void SendConnectData(const std::string& t_data);
+	//void SendStartGame(const std::string& t_data);
 	bool RequestFile(const std::string& fileName);
 	bool getConnected();
 	~Client();
@@ -45,5 +45,5 @@ private: //Private variables
 	std::string& m_gameData;
 	std::string& m_winData;
 	std::string& m_connectData;
-	std::string& m_gameStart;
+	std::string& m_startData;
 };

@@ -9,92 +9,139 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 	{
 	case PacketType::ChatMessage: //Packet Type: chat message
 	{
-		std::string message; //string to store our message we received
+		std::string message = "other:gd:10,20"; //string to store our message we received
 		if (!GetString(connection, message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
-
-		//Next we need to send the message out to each user
-		PS::ChatMessage cm(message);
-		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cm.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+		else
 		{
-			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
-			for (auto conn : m_connections) //For each connection...
+			std::cout << "Packet data received: " << message << std::endl;
+			//break first part of string off
+			if (message.find("all:") != std::string::npos)
 			{
-				if (conn == connection) //If connection is the user who sent the message...
-					continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
-				conn->m_pm.Append(msgPacket);
+				std::string data = message.erase(message.find("all:"), 4);
+				//send to all connections, including self
+				//Next we need to send the message out to each user
+				PS::ChatMessage cm(message);
+				std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cm.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+				{
+					std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+					for (auto conn : m_connections) //For each connection...
+					{
+						conn->m_pm.Append(msgPacket);
+					}
+				}
 			}
-		}
-		std::cout << "Processed chat message packet from user ID: " << connection->m_ID << std::endl;
-		break;
-	}
-	case PacketType::GameData: //Packet Type: gameData
-	{
-		std::string gameData; //string to store our gameData we received
-		if (!GetString(connection, gameData)) //Get the gameData and store it in variable: gameData
-			return false; //If we do not properly get the gameData, return false
-						  //Next we need to send the gameData out to each user
-
-		PS::GameData gd(gameData);
-		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(gd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
-		{
-			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
-			for (auto conn : m_connections) //For each connection...
+			else if (message.find("other:") != std::string::npos)
 			{
-				if (conn == connection) //If connection is the user who sent the gameData...
-					continue;//Skip to the next user since there is no purpose in sending the gameData back to the user who sent it.
-				conn->m_pm.Append(msgPacket);
+				std::string data = message.erase(message.find("other:"), 6);
+
+				//dont sent to self
+				PS::ChatMessage cm(message);
+				std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cm.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+				{
+					std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+					for (auto conn : m_connections) //For each connection...
+					{
+						if (conn == connection) //If connection is the user who sent the message...
+							continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
+						conn->m_pm.Append(msgPacket);
+					}
+				}
 			}
-		}
-		std::cout << "Processed gameData packet from user ID: " << connection->m_ID << std::endl;
-		break;
-	}
-	case PacketType::WinData:
-	{
-		std::string winData;
-		if (!GetString(connection, winData))
-			return false;
-		PS::WinData wd(winData);
-		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(wd.toPacket());
-		{
-			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
-			for (auto conn : m_connections)
+			else if (message.find("self:") != std::string::npos) //this should be only ConnectData packetType
 			{
-				if (conn == connection)
-					continue;
-				conn->m_pm.Append(msgPacket);
-			}
-		}
-		std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
-		break;
-	}
-	case PacketType::ConnectData: //Packet Type: gameData
-	{
-		std::string connectData; //string to store our connectData we received
+				std::string data = message.erase(message.find("self:"), 5);
 
-		std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+				if (1 == m_connections.size())
+				{
+					data += "host";
+				}
+				else
+				{
+					data += "guest";
+				}
 
-		if (1 == m_connections.size()) //if this connection is the first player joining
-		{
-			connectData = "host";
-			PS::ConnectData cd(connectData);
-			std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
-			connection->m_pm.Append(msgPacket);
-		}
-		else //this is a second player
-		{
-			connectData = "guest";
-			PS::ConnectData cd(connectData);
-			std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket());
-			for (auto conn : m_connections)
-			{
-				conn->m_pm.Append(msgPacket);
+				//dont sent to self
+				PS::ChatMessage cm(data);
+				std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cm.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+				{
+					std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+
+					connection->m_pm.Append(msgPacket);
+				}
 			}
 		}
 
-		std::cout << "Processed Connect Data packet from user ID: " << connection->m_ID << std::endl;
+		std::cout << "Processed packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
+	//case PacketType::GameData: //Packet Type: gameData
+	//{
+	//	std::string gameData; //string to store our gameData we received
+	//	if (!GetString(connection, gameData)) //Get the gameData and store it in variable: gameData
+	//		return false; //If we do not properly get the gameData, return false
+	//					  //Next we need to send the gameData out to each user
+
+	//	PS::GameData gd(gameData);
+	//	std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(gd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+	//	{
+	//		std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+	//		for (auto conn : m_connections) //For each connection...
+	//		{
+	//			if (conn == connection) //If connection is the user who sent the gameData...
+	//				continue;//Skip to the next user since there is no purpose in sending the gameData back to the user who sent it.
+	//			conn->m_pm.Append(msgPacket);
+	//		}
+	//	}
+	//	std::cout << "Processed gameData packet from user ID: " << connection->m_ID << std::endl;
+	//	break;
+	//}
+	//case PacketType::WinData:
+	//{
+	//	std::string winData;
+	//	if (!GetString(connection, winData))
+	//		return false;
+	//	PS::WinData wd(winData);
+	//	std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(wd.toPacket());
+	//	{
+	//		std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+	//		for (auto conn : m_connections)
+	//		{
+	//			if (conn == connection)
+	//				continue;
+	//			conn->m_pm.Append(msgPacket);
+	//		}
+	//	}
+	//	std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
+	//	break;
+	//}
+	//case PacketType::ConnectData: //Packet Type: gameData
+	//{
+	//	std::string connectData; //string to store our connectData we received
+
+	//	std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+
+	//	if (1 == m_connections.size()) //if this connection is the first player joining
+	//	{
+	//		connectData = "host";
+	//		PS::ConnectData cd(connectData);
+	//		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
+	//		connection->m_pm.Append(msgPacket);
+	//	}
+	//	else //this is a second player
+	//	{
+	//		connectData = "guest";
+	//		PS::ConnectData cd(connectData);
+	//		std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket());
+	//		for (auto conn : m_connections)
+	//		{
+	//			conn->m_pm.Append(msgPacket);
+	//		}
+	//	}
+
+	//	std::cout << "Processed Connect Data packet from user ID: " << connection->m_ID << std::endl;
+	//	break;
+	//}
 	case PacketType::FileTransferRequestFile:
 	{
 		std::string fileName; //string to store file name
