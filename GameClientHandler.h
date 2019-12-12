@@ -13,18 +13,21 @@ public:
 	std::string& getGameData();
 	std::string& getWinData();
 	std::string& getStartData();
-	std::string getConnectData();
+	std::string& getRestartData();
+	std::string& getConnectData();
 	bool isConnected();
 	void sendGameData(int t_posX, int t_posY);
 	void sendWinData(int t_ms);
 	void sendConnectData();
 	void sendStartData();
+	void sendStartData(std::string t_playerType);
 
 private:
 	std::string m_gameData;
 	std::string m_winData;
 	std::string m_connectData;
 	std::string m_gameStartData;
+	std::string m_restartData;
 	Client* m_client;
 
 	const std::string LOCAL_HOST = "127.0.0.1";

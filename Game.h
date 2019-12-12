@@ -5,13 +5,19 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-#include <random>
 #include "Dot.h"
 #include "GameClientHandler.h"
 #include "SDL_ttf.h"
 
 class Game
 {
+	enum class GameState
+	{
+		Waiting,
+		Playing,
+		Restarting
+	};
+
 public:
 	Game();
 	~Game();
@@ -23,15 +29,19 @@ private:
 	void update();
 	void render();
 	void cleanup();
+
+	void waitingState();
+	void playingState();
+	void restartingState();
+
 	void processGameData();
 	void processWinData();
 	void processStartData();
 	void gameFinished();
-	void restart();
-	void moveDot();
 	void boundaryCheck(float& x, float& y);
 	void resetStartPos();
 	std::string getErrorString(std::string t_errorMsg);
+
 	// window used in the program
 	SDL_Window* m_window;
 
@@ -40,18 +50,15 @@ private:
 
 	// if game loop is happening
 	bool m_isRunning;
-
-	unsigned int m_timeSinceLastSend = 0;
-	const bool SEND_DELAY = 50;
-
 	int m_localPosX, m_localPosY;
 
-	Dot m_hunterDot;
-	Dot m_preyDot;
-	Dot* m_playerDot;
-	Dot* m_otherPlayerDot;
+	//two dots on the screen
+	Dot m_hunterDot;//red dot
+	Dot m_preyDot;//blue dot
+	Dot* m_playerDot;//pointer to either dot that player controls
+	Dot* m_otherPlayerDot;//pointer to the other dot the other player controls
 
-	GameClientHandler m_gch;
+	GameClientHandler m_clientHandler;
 
 	//consts
 	const int WINDOW_WIDTH;
@@ -65,8 +72,7 @@ private:
 	const std::string START_DATA = "sd:";
 
 	bool m_isHost;
-	int gameStartTime;
-	int displayTextTime;
+	int m_displayTextTime;
 
 	bool m_isColliding;
 
@@ -76,6 +82,9 @@ private:
 	SDL_Texture* m_textTexture;
 
 	bool m_gameOver;
-	bool m_gameStarted = false;
 	SDL_Rect m_textRect;
+
+	GameState m_state = GameState::Waiting;
+
+	int m_gameTime = 0;
 };

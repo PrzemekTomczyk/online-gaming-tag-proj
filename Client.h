@@ -7,7 +7,7 @@
 class Client
 {
 public: //Public functions
-	Client(const char* ip, const int port, std::string& t_gameData, std::string& t_winData, std::string& t_connectionData, std::string& t_gameStartData);
+	Client(const char* ip, const int port, std::string& t_gameData, std::string& t_winData, std::string& t_connectionData, std::string& t_gameStartData, std::string& t_restartData);
 	bool Connect();
 	void Disconnect();
 	void SendString(const std::string& str);
@@ -46,4 +46,5 @@ private: //Private variables
 	std::string& m_winData;
 	std::string& m_connectData;
 	std::string& m_startData;
+	std::string& m_restartData;
 };

@@ -23,6 +23,7 @@ public:
 
 	//Moves the dot
 	void move(int SCREEN_HEIGHT, int SCREEN_WIDTH);
+	void resetVelo();
 
 	//Shows the dot on the screen
 	void render(SDL_Renderer *gRenderer);
@@ -52,4 +53,8 @@ private:
 	int m_velX, m_velY;
 
 	LTexture m_dotTexture;
+	bool m_w = false;
+	bool m_s = false;
+	bool m_a = false;
+	bool m_d = false;
 };

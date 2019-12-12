@@ -14,7 +14,7 @@ bool Client::ProcessPacketType(PacketType packetType)
 			return false; //If we do not properly get the chat message, return false
 		else
 		{
-			std::cout << "Packet data: " << message << std::endl;
+			//std::cout << "Packet data: " << message << std::endl;
 			if (message.find("gd:") != std::string::npos)
 			{
 				m_gameData = message.erase(message.find("gd:"), 3);
@@ -25,41 +25,22 @@ bool Client::ProcessPacketType(PacketType packetType)
 			}
 			else if (message.find("wd:") != std::string::npos)
 			{
-				m_winData = message.erase(message.find("wd:"), 3);;
+				m_winData = message.erase(message.find("wd:"), 3);
 			}
 			else if (message.find("sd:") != std::string::npos)
 			{
-				m_startData = message;
+				if (message.size() > 3)
+				{
+					m_restartData = message.erase(message.find("sd:"), 3);
+				}
+				else
+				{
+					m_startData = message;
+				}
 			}
 		}
 		break;
 	}
-	//case PacketType::GameData:
-	//{
-	//	std::string gameData; //string to store gameData we received
-	//	if (!GetString(gameData)) //Get the game data and store it in variable: gameData
-	//		return false; //If we do not properly get the gameData, return false
-	//	m_gameData = gameData; //Set the gamedata with what we just received
-	//	break;
-	//}
-	//case PacketType::WinData:
-	//{
-	//	std::string winData;
-	//	if (!GetString(winData))
-	//		return false;
-	//	m_winData = winData;
-	//	//std::cout << m_winData << std::endl;
-	//	break;
-	//}
-	//case PacketType::ConnectData:
-	//{
-	//	std::string connectData;
-	//	if (!GetString(connectData))
-	//		return false;
-	//	m_connectData = connectData;
-	//	std::cout << m_connectData << std::endl;
-	//	break;
-	//}
 	case PacketType::FileTransferByteBuffer:
 	{
 		std::int32_t buffersize; //buffer to hold size of buffer to write to file

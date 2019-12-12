@@ -68,10 +68,10 @@ void Dot::handleEvent(SDL_Event& e)
 		//Adjust the velocity
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_w: m_velY -= DOT_VEL; break;
-		case SDLK_s: m_velY += DOT_VEL; break;
-		case SDLK_a: m_velX -= DOT_VEL; break;
-		case SDLK_d: m_velX += DOT_VEL; break;
+		case SDLK_w: m_w = true; break;
+		case SDLK_s: m_s = true; break;
+		case SDLK_a: m_a = true; break;
+		case SDLK_d: m_d = true; break;
 		}
 	}
 	//If a key was released
@@ -80,38 +80,74 @@ void Dot::handleEvent(SDL_Event& e)
 		//Adjust the velocity
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_w: m_velY += DOT_VEL; break;
-		case SDLK_s: m_velY -= DOT_VEL; break;
-		case SDLK_a: m_velX += DOT_VEL; break;
-		case SDLK_d: m_velX -= DOT_VEL; break;
+		case SDLK_w: m_w = false; break;
+		case SDLK_s: m_s = false; break;
+		case SDLK_a: m_a = false; break;
+		case SDLK_d: m_d = false; break;
 		}
 	}
 }
 
 void Dot::move(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
+	if (m_w) 
+	{
+		m_posY -= DOT_VEL;
+	}
+	if (m_s)
+	{
+		m_posY += DOT_VEL;
+	}
+	if (m_a)
+	{
+		m_posX -= DOT_VEL;
+	}
+	else if (m_d)
+	{
+		m_posX += DOT_VEL;
+	}
+
 	//Move the dot left or right
-	m_posX += m_velX;
+	//m_posX += m_velX;
 
 	//If the dot went too far to the left or right
-	if ((m_posX < 0) || (m_posX + DOT_WIDTH > SCREEN_WIDTH))
+	if (m_posX < 0)
 	{
 		//Move back
-		m_posX -= m_velX;
+		m_posX = 0;
+	}
+	else if (m_posX + DOT_WIDTH > SCREEN_WIDTH)
+	{
+		m_posX = SCREEN_WIDTH - DOT_WIDTH;
 	}
 
 	//Move the dot up or down
-	m_posY += m_velY;
+	//m_posY += m_velY;
 
 	//If the dot went too far up or down
-	if ((m_posY < 0) || (m_posY + DOT_HEIGHT > SCREEN_HEIGHT))
+	if (m_posY < 0)
 	{
 		//Move back
-		m_posY -= m_velY;
+		m_posY = 0;
+	}
+	else if (m_posY + DOT_HEIGHT > SCREEN_HEIGHT)
+	{
+		m_posY = SCREEN_HEIGHT - DOT_HEIGHT;
 	}
 
 	m_centerX = m_posX + (DOT_WIDTH / 2);
 	m_centerY = m_posY + (DOT_HEIGHT / 2);
+}
+
+void Dot::resetVelo()
+{
+	m_w = false;
+	m_s = false;
+	m_a = false;
+	m_d = false;
+
+	m_velX = 0;
+	m_velY = 0;
 }
 
 void Dot::render(SDL_Renderer* gRenderer)

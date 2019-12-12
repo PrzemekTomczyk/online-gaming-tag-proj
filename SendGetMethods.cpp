@@ -50,24 +50,6 @@ void Client::SendString(const std::string& str)
 	m_pm.Append(cm.toPacket());
 }
 
-//void Client::SendGameData(const std::string& t_data)
-//{
-//	PS::GameData gd(t_data);
-//	m_pm.Append(gd.toPacket());
-//}
-//
-//void Client::SendWinData(const std::string& t_data)
-//{
-//	PS::WinData wd(t_data);
-//	m_pm.Append(wd.toPacket());
-//}
-//
-//void Client::SendConnectData(const std::string& t_data)
-//{
-//	PS::ConnectData cd(t_data);
-//	m_pm.Append(cd.toPacket());
-//}
-
 bool Client::GetString(std::string& str)
 {
 	int32_t bufferlength; //Holds length of the message
