@@ -35,7 +35,13 @@ void GameClientHandler::connectToServer(std::string t_ip, int t_port)
 
 void GameClientHandler::disconnect()
 {
-	m_client->Disconnect();
+	if (m_client)
+	{
+		if (m_client->getConnected())
+		{
+			m_client->Disconnect();
+		}
+	}	
 	delete m_client;
 	m_client = nullptr;
 }

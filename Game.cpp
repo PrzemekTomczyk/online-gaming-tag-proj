@@ -1,9 +1,8 @@
 #include "Game.h"
 
 
-Game::Game()
-	:
-	m_gameOver{false},
+Game::Game() :
+	m_gameOver{ false },
 	m_redDot{ true },
 	m_blueDot{ false },
 	WINDOW_WIDTH(800),
@@ -149,28 +148,28 @@ void Game::update()
 	//update things here
 	if (!m_gameOver)
 	{
-	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	//m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
-	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		//m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	if (m_playerDot)
-	{
-		m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
-	}
+		if (m_playerDot)
+		{
+			m_playerDot->move(WINDOW_WIDTH, WINDOW_HEIGHT);
+		}
 
-	bool collisionDetected = false;
-	if (m_redDot.collisionDetection(m_blueDot))
-	{
-		collisionDetected = true;
-	}
+		bool collisionDetected = false;
+		if (m_redDot.collisionDetection(m_blueDot))
+		{
+			collisionDetected = true;
+		}
 
 
 		if (m_gch.isConnected())
 		{
 			//we online bois
 			if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
-			m_timeSinceLastSend = SDL_GetTicks();
+				m_timeSinceLastSend = SDL_GetTicks();
 			if (m_localPosX != m_redDot.GetCenterX() || m_localPosY != m_redDot.GetCenterY())
 			{
 				m_gch.sendGameData(m_redDot.GetCenterX(), m_redDot.GetCenterY());
@@ -218,6 +217,8 @@ void Game::render()
 
 void Game::cleanup()
 {
+	m_gch.disconnect();
+
 	SDL_DestroyTexture(m_textTexture);
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
@@ -279,7 +280,7 @@ void Game::restart()
 {
 	m_gameOver = false;
 	gameStartTime = SDL_GetTicks();
-	m_redDot.SetPosition(50,50);
+	m_redDot.SetPosition(50, 50);
 	m_blueDot.SetPosition(750, 550);
 }
 

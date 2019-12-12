@@ -44,6 +44,7 @@ private:
 	Dot m_redDot;
 	Dot m_blueDot;
 	Dot* m_playerDot;
+	Dot* m_otherDot;
 
 	GameClientHandler m_gch;
 
@@ -62,4 +63,6 @@ private:
 
 	bool m_gameOver;
 	SDL_Rect m_textRect;
+
+	std::string m_connectionData;
 };

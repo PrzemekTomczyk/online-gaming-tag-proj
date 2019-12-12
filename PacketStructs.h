@@ -42,4 +42,13 @@ namespace PS //Packet Structures Namespace
 	private:
 		std::string m_message;
 	};
+
+	class ConnectionData
+	{
+	public:
+		ConnectionData(const std::string& t_str);
+		std::shared_ptr<Packet> toPacket();
+	private:
+		std::string m_data;
+	};
 }

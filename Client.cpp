@@ -17,11 +17,11 @@ bool Client::ProcessPacketType(PacketType packetType)
 	}
 	case PacketType::GameData:
 	{
-		std::string gameData; //string to store our message we received
-		if (!GetString(gameData)) //Get the chat message and store it in variable: Message
-			return false; //If we do not properly get the chat message, return false
-		m_gameData = gameData; //Display the message to the user
-		std::cout << m_gameData << std::endl;
+		std::string gameData; //string to store gameData we received
+		if (!GetString(gameData)) //Get the game data and store it in variable: gameData
+			return false; //If we do not properly get the gameData, return false
+		m_gameData = gameData; //Set the gamedata with what we just received
+		//std::cout << m_gameData << std::endl;
 		break;
 	}
 	case PacketType::WinData:
@@ -31,6 +31,15 @@ bool Client::ProcessPacketType(PacketType packetType)
 			return false;
 		m_winData = winData;
 		std::cout << m_winData << std::endl;
+		break;
+	}
+	case PacketType::ConnectionData:
+	{
+		std::string connectionData; //string to store our connectionData we received
+		if (!GetString(connectionData)) //Get the connectionData and store it in variable: connectionData
+			return false; //If we do not properly get the connectionData, return false
+		m_gameData = connectionData; //Display the message to the user
+		std::cout << m_gameData << std::endl;
 		break;
 	}
 	case PacketType::FileTransferByteBuffer:

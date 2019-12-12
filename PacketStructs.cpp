@@ -50,4 +50,19 @@ namespace PS
 		packet->Append(m_message);
 		return packet;
 	}
+
+	ConnectionData::ConnectionData(const std::string& t_str) :
+		m_data(t_str)
+	{
+	}
+
+	std::shared_ptr<Packet> ConnectionData::toPacket()
+	{
+		std::shared_ptr<Packet> packet = std::make_shared<Packet>();
+		packet->Append(PacketType::ConnectionData);
+		packet->Append(m_data.size());
+		packet->Append(m_data);
+		return packet;
+	}
+
 }
