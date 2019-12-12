@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <random>
 #include "Dot.h"
 #include "GameClientHandler.h"
 #include "SDL_ttf.h"
@@ -26,6 +27,8 @@ private:
 	void processWinData();
 	void gameFinished();
 	void restart();
+	void moveDot();
+	void boundaryCheck(float& x, float& y);
 	std::string getErrorString(std::string t_errorMsg);
 	// window used in the program
 	SDL_Window* m_window;
@@ -56,6 +59,9 @@ private:
 
 	bool m_isHost;
 	int gameStartTime;
+	int displayTextTime;
+
+	bool m_isColliding;
 
 	TTF_Font* m_font;
 
