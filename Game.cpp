@@ -3,12 +3,12 @@
 
 Game::Game()
 	:
-	m_gameOver{false},
 	m_redDot{ true },
 	m_blueDot{ false },
 	WINDOW_WIDTH(800),
 	WINDOW_HEIGHT(600),
-	PORT_NUM(1111)
+	PORT_NUM(1111),
+	displayTextTime(0)
 {
 	try
 	{
@@ -31,8 +31,8 @@ Game::Game()
 		gameStartTime = SDL_GetTicks();
 		m_textRect.x = 0;
 		m_textRect.y = 0;
-		m_textRect.w = 600;
-		m_textRect.h = 250;
+		m_textRect.w = 400;
+		m_textRect.h = 150;
 		m_redDot.init(m_renderer);
 		m_blueDot.init(m_renderer);
 	}
@@ -108,18 +108,12 @@ void Game::processEvents()
 		}
 		case SDLK_r:
 		{
-			if (m_gameOver)
-			{
-				restart();
-			}
+			restart();
 			break;
 		}
 		case SDLK_g:
 		{
-			if (!m_gameOver)
-			{
-				gameFinished();
-			}
+			gameFinished();
 			break;
 		}
 		default:
@@ -135,20 +129,13 @@ void Game::processEvents()
 	default:
 		break;
 	}
-	if (!m_gameOver)
-	{
-		m_redDot.handleEvent(event);
-		m_blueDot.handleEvent(event);
-	}
-
-
+	m_redDot.handleEvent(event);
+	m_blueDot.handleEvent(event);
 }
 
 void Game::update()
 {
 	//update things here
-	if (!m_gameOver)
-	{
 	//m_blueDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	//m_redDot.move(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -165,38 +152,40 @@ void Game::update()
 		collisionDetected = true;
 	}
 
-
-		if (m_gch.isConnected())
+	if (m_gch.isConnected())
+	{
+		//we online bois
+		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
+		m_timeSinceLastSend = SDL_GetTicks();
+		if (m_localPosX != m_redDot.GetCenterX() || m_localPosY != m_redDot.GetCenterY())
 		{
-			//we online bois
-			if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
-			m_timeSinceLastSend = SDL_GetTicks();
-			if (m_localPosX != m_redDot.GetCenterX() || m_localPosY != m_redDot.GetCenterY())
-			{
-				m_gch.sendGameData(m_redDot.GetCenterX(), m_redDot.GetCenterY());
-				m_localPosX = m_redDot.GetCenterX();
-				m_localPosY = m_redDot.GetCenterY();
-			}
-			if (collisionDetected)
-			{
-				if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
-				{
-					m_timeSinceLastSend = SDL_GetTicks();
-					if (m_localPosX != m_playerDot->GetCenterX() || m_localPosY != m_playerDot->GetCenterY())
-					{
-						m_gch.sendGameData(m_playerDot->GetCenterX(), m_playerDot->GetCenterY());
-						m_localPosX = m_playerDot->GetCenterX();
-						m_localPosY = m_playerDot->GetCenterY();
-					}
-					if (collisionDetected)
-					{
-						m_gch.sendWinData();
-					}
-				}
-				processGameData();
-				processWinData();
-			}
+			m_gch.sendGameData(m_redDot.GetCenterX(), m_redDot.GetCenterY());
+			m_localPosX = m_redDot.GetCenterX();
+			m_localPosY = m_redDot.GetCenterY();
 		}
+		if (SDL_GetTicks() > m_timeSinceLastSend + SEND_DELAY)
+		{
+			m_timeSinceLastSend = SDL_GetTicks();
+			if (m_localPosX != m_playerDot->GetCenterX() || m_localPosY != m_playerDot->GetCenterY())
+			{
+				m_gch.sendGameData(m_playerDot->GetCenterX(), m_playerDot->GetCenterY());
+				m_localPosX = m_playerDot->GetCenterX();
+				m_localPosY = m_playerDot->GetCenterY();
+			}
+
+		}
+		if (collisionDetected)
+		{
+			m_gch.sendWinData();
+			processWinData();
+		}
+		else
+		{
+			m_isColliding = false;
+		}
+		processGameData();
+		processWinData();
+			
 	}
 }
 
@@ -206,10 +195,7 @@ void Game::render()
 
 	//render things here
 
-	if (m_gameOver)
-	{
-		SDL_RenderCopy(m_renderer, m_textTexture, NULL, &m_textRect);
-	}
+	SDL_RenderCopy(m_renderer, m_textTexture, NULL, &m_textRect);
 	m_redDot.render(m_renderer);
 	m_blueDot.render(m_renderer);
 
@@ -260,27 +246,89 @@ void Game::processWinData()
 		{
 			gameFinished();
 			std::cout << "OUCH!" << std::endl;
+			winData = "";
+			m_isColliding = false;
 		}
 	}
 }
 
 void Game::gameFinished()
 {
-	m_gameOver = true;
-	int gameTime = SDL_GetTicks() - gameStartTime;
-	std::string gameOverText = "Game Won\nTime Elapsed:\n" + std::to_string(gameTime) + " Milliseconds\nPress R To Restart";
-	m_textMessage = TTF_RenderText_Blended_Wrapped(m_font, gameOverText.c_str(), SDL_Color{ 255,255,0,255 }, 5000);
-	if (!m_textMessage) std::cout << "Error Loading Surface" << std::endl;
-	m_textTexture = SDL_CreateTextureFromSurface(m_renderer, m_textMessage);
-	if (!m_textTexture) std::cout << "Error Loading Texture" << std::endl;
+	if (!m_isColliding)
+	{
+		int gameTime = SDL_GetTicks() - gameStartTime;
+		std::string gameOverText = "Collision Detected Time Elapsed:" + std::to_string(gameTime) + " Milliseconds";
+		m_textMessage = TTF_RenderText_Blended(m_font, gameOverText.c_str(), SDL_Color{ 255,255,0,255 });
+		if (!m_textMessage) std::cout << "Error Loading Surface" << std::endl;
+		m_textTexture = SDL_CreateTextureFromSurface(m_renderer, m_textMessage);
+		if (!m_textTexture) std::cout << "Error Loading Texture" << std::endl;
+		moveDot();
+		gameStartTime = SDL_GetTicks();
+		m_isColliding = true;
+	}
 }
 
 void Game::restart()
 {
-	m_gameOver = false;
 	gameStartTime = SDL_GetTicks();
-	m_redDot.SetPosition(50,50);
-	m_blueDot.SetPosition(750, 550);
+	if (m_isHost)
+	{
+		m_redDot.SetPosition(50, 50);
+
+	}
+	else
+	{
+		m_redDot.SetPosition(750, 550);
+
+	}
+
+}
+
+void Game::moveDot()
+{
+	//#include <random>
+	//#include <iostream>
+
+	//	int main()
+	//	{
+	//		std::random_device dev;
+	//		std::mt19937 rng(dev());
+	//		std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6); // distribution in range [1, 6]
+
+	//		std::cout << dist6(rng) << std::endl;
+	//	}
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_int_distribution<std::mt19937::result_type> dist(1, 360);
+	//pI/180
+	float xMovement, yMovement;
+	//hsinanfle = y
+	xMovement = (100) * std::cos((dist(rng) * (M_PI / 180)));
+	yMovement = (100) * std::sin((dist(rng) * (M_PI / 180)));
+	xMovement += m_redDot.GetCenterX();
+	yMovement += m_redDot.GetCenterY();
+	boundaryCheck(xMovement, yMovement);
+	m_redDot.SetPosition(xMovement, yMovement);
+}
+
+void Game::boundaryCheck(float& x, float& y)
+{
+	if (x < 0)
+	{
+		x = 20;
+	}
+	else if (x > WINDOW_WIDTH)
+	{
+		x = WINDOW_WIDTH -20;
+	}
+	if (y < 0)
+	{
+		y = 20;
+	}
+	else if (y > WINDOW_HEIGHT)
+	{
+		y = WINDOW_HEIGHT -20;
+	}
 }
 
 std::string Game::getErrorString(std::string t_errorMsg)

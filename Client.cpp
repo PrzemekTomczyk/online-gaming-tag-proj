@@ -30,7 +30,7 @@ bool Client::ProcessPacketType(PacketType packetType)
 		if (!GetString(winData))
 			return false;
 		m_winData = winData;
-		std::cout << m_winData << std::endl;
+		//std::cout << m_winData << std::endl;
 		break;
 	}
 	case PacketType::FileTransferByteBuffer:
