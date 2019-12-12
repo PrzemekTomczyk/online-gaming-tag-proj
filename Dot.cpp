@@ -30,7 +30,7 @@ void Dot::SetPosition(int x, int y)
 {
 	m_centerX = x;
 	m_centerY = y;
-	
+
 	m_posX = m_centerX - (DOT_WIDTH / 2);
 	m_posY = m_centerY - (DOT_HEIGHT / 2);
 }

@@ -58,8 +58,14 @@ void Client::SendGameData(const std::string& t_data)
 
 void Client::SendWinData(const std::string& t_data)
 {
-	PS::WinData gd(t_data);
-	m_pm.Append(gd.toPacket());
+	PS::WinData wd(t_data);
+	m_pm.Append(wd.toPacket());
+}
+
+void Client::SendConnectData(const std::string& t_data)
+{
+	PS::ConnectData cd(t_data);
+	m_pm.Append(cd.toPacket());
 }
 
 bool Client::GetString(std::string& str)

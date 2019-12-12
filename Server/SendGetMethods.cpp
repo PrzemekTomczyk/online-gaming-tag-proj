@@ -51,18 +51,6 @@ void Server::SendString(std::shared_ptr<Connection> connection, const std::strin
 	connection->m_pm.Append(message.toPacket());
 }
 
-void Server::SendGameData(std::shared_ptr<Connection> connection, const std::string& t_data)
-{
-	PS::GameData gd(t_data);
-	connection->m_pm.Append(gd.toPacket());
-}
-
-void Server::SendWinData(std::shared_ptr<Connection> connection, const std::string& t_data)
-{
-	PS::WinData wd(t_data);
-	connection->m_pm.Append(wd.toPacket());
-}
-
 bool Server::GetString(std::shared_ptr<Connection> connection, std::string& str)
 {
 	std::int32_t bufferlength; //Holds length of the message

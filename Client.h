@@ -7,28 +7,29 @@
 class Client
 {
 public: //Public functions
-	Client(const char * ip, const int port, std::string& t_gameData, std::string& t_winData);
+	Client(const char* ip, const int port, std::string& t_gameData, std::string& t_winData, std::string& t_connectionData, std::string& t_gameStartData);
 	bool Connect();
 	void Disconnect();
-	void SendString(const std::string & str);
+	void SendString(const std::string& str);
 	void SendGameData(const std::string& t_data);
 	void SendWinData(const std::string& t_data);
-	bool RequestFile(const std::string & fileName);
+	void SendConnectData(const std::string& t_data);
+	void SendStartGame(const std::string& t_data);
+	bool RequestFile(const std::string& fileName);
 	bool getConnected();
 	~Client();
 private: //Private functions
 	bool CloseConnection();
 	bool ProcessPacketType(const PacketType packetType);
-	//bool ProcessGamePacketType(const PacketType packetType);
-	static void ClientThread(Client & client); //Client thread which reads messages from server
-	static void PacketSenderThread(Client & client); //Packet sender thread which sends out packets existing in packet manager
+	static void ClientThread(Client& client); //Client thread which reads messages from server
+	static void PacketSenderThread(Client& client); //Packet sender thread which sends out packets existing in packet manager
 	//Sending Funcs
-	bool sendall(const char * data, const int totalBytes);
+	bool sendall(const char* data, const int totalBytes);
 	//Getting Funcs
-	bool recvall(char * data, const int totalBytes);
-	bool Getint32_t(std::int32_t & int32_t);
-	bool GetPacketType(PacketType & packetType);
-	bool GetString(std::string & str);
+	bool recvall(char* data, const int totalBytes);
+	bool Getint32_t(std::int32_t& int32_t);
+	bool GetPacketType(PacketType& packetType);
+	bool GetString(std::string& str);
 	void joinThreads();
 private: //Private variables
 	bool m_terminateThreads = false;
@@ -43,4 +44,6 @@ private: //Private variables
 
 	std::string& m_gameData;
 	std::string& m_winData;
+	std::string& m_connectData;
+	std::string& m_gameStart;
 };

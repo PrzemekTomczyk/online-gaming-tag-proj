@@ -68,33 +68,31 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 		std::cout << "Processed Win Data packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
-	case PacketType::ConnectionData: //Packet Type: gameData
+	case PacketType::ConnectData: //Packet Type: gameData
 	{
 		std::string connectData; //string to store our connectData we received
-		//if (!GetString(connection, connectData)) //Get the connectData and store it in variable: connectData
-		//	return false; //If we do not properly get the connectData, return false
-						  //Next we need to send the connectData out to each user
 
+		std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
+
+		if (1 == m_connections.size()) //if this connection is the first player joining
 		{
-			std::shared_lock<std::shared_mutex> lock(m_mutex_connectionMgr);
-
-			//if this packet is received and we only ahve 1 user
-			//then this user should be host
-			if (1 == m_connections.size())
-			{
-				connectData = "host";
-			}
-			else
-			{
-				connectData = "guest";
-			}
-
-			PS::ConnectionData cd(connectData);
+			connectData = "host";
+			PS::ConnectData cd(connectData);
 			std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket()); //use shared_ptr instead of sending with SendString so we don't have to reallocate packet for each connection
 			connection->m_pm.Append(msgPacket);
-
 		}
-		std::cout << "Processed connectData packet from user ID: " << connection->m_ID << std::endl;
+		else //this is a second player
+		{
+			connectData = "guest";
+			PS::ConnectData cd(connectData);
+			std::shared_ptr<Packet> msgPacket = std::make_shared<Packet>(cd.toPacket());
+			for (auto conn : m_connections)
+			{
+				conn->m_pm.Append(msgPacket);
+			}
+		}
+
+		std::cout << "Processed Connect Data packet from user ID: " << connection->m_ID << std::endl;
 		break;
 	}
 	case PacketType::FileTransferRequestFile:
@@ -123,7 +121,11 @@ bool Server::ProcessPacket(std::shared_ptr<Connection> connection, PacketType pa
 	}
 	default: //If packet type is not accounted for
 	{
-		std::cout << "Unrecognized packet: " << (std::int32_t)packetType << std::endl; //Display that packet was not found
+		std::cout << "Unrecognized packet: " << (std::int32_t)packetType << " from user: " << connection->m_ID << std::endl; //Display that packet was not found
+		std::string unknownPacket;
+		if (!GetString(connection, unknownPacket))
+			std::cout << unknownPacket << std::endl;
+
 		return false;
 	}
 	}

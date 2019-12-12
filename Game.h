@@ -41,10 +41,10 @@ private:
 
 	int m_localPosX, m_localPosY;
 
-	Dot m_redDot;
-	Dot m_blueDot;
+	Dot m_hunterDot;
+	Dot m_preyDot;
 	Dot* m_playerDot;
-	Dot* m_otherDot;
+	Dot* m_otherPlayerDot;
 
 	GameClientHandler m_gch;
 
@@ -52,17 +52,17 @@ private:
 	const int WINDOW_WIDTH;
 	const int WINDOW_HEIGHT;
 	const int PORT_NUM;
-	bool m_isHost;
+	const std::string HOST = "host";
 
+	bool m_isHost;
 	int gameStartTime;
 
-	TTF_Font *m_font;
+	TTF_Font* m_font;
 
 	SDL_Surface* m_textMessage;
 	SDL_Texture* m_textTexture;
 
 	bool m_gameOver;
+	bool m_gameStarted = false;
 	SDL_Rect m_textRect;
-
-	std::string m_connectionData;
 };

@@ -67,7 +67,7 @@ bool Server::ListenForNewConnection()
 Server::~Server()
 {
 	m_terminateThreads = true;
-	for (std::thread * t : m_threads) //Wait for all created threads to end...
+	for (std::thread* t : m_threads) //Wait for all created threads to end...
 	{
 		t->join();
 	}

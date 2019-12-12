@@ -3,9 +3,11 @@
 #pragma comment(lib,"ws2_32.lib") //Required for WinSock
 #include <iostream> //for std::cout
 
-Client::Client(const char * ip, const int port, std::string& t_gameData, std::string& t_winData) :
+Client::Client(const char* ip, const int port, std::string& t_gameData, std::string& t_winData, std::string& t_connectionData, std::string& t_gameStartData) :
 	m_gameData(t_gameData),
-	m_winData(t_winData)
+	m_winData(t_winData),
+	m_connectData(t_connectionData),
+	m_gameStart(t_gameStartData)
 {
 	//Winsock Startup
 	WSAData wsaData;

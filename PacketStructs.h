@@ -43,12 +43,16 @@ namespace PS //Packet Structures Namespace
 		std::string m_message;
 	};
 
-	class ConnectionData
+	class ConnectData
 	{
 	public:
-		ConnectionData(const std::string& t_str);
+		/* Add game data to be sent to the server*/
+		ConnectData(const std::string& t_str);
 		std::shared_ptr<Packet> toPacket();
 	private:
-		std::string m_data;
+		//Game data to be sent to the server
+		std::string m_connectData;
 	};
+
+
 }

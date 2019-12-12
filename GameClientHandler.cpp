@@ -7,7 +7,15 @@ GameClientHandler::GameClientHandler() :
 
 GameClientHandler::~GameClientHandler()
 {
-	delete m_client;
+	if (m_client)
+	{
+		if (m_client->getConnected())
+		{
+			m_client->Disconnect();
+		}
+		delete m_client;
+	}
+	m_client = nullptr;
 }
 
 void GameClientHandler::connectToServer(std::string t_ip, int t_port)
@@ -19,17 +27,18 @@ void GameClientHandler::connectToServer(std::string t_ip, int t_port)
 
 	if (t_ip.empty())
 	{
-		m_client = new Client(LOCAL_HOST.c_str(), t_port, m_gameData, m_winData);
+		m_client = new Client(LOCAL_HOST.c_str(), t_port, m_gameData, m_winData, m_connectData, m_gameStartData);
 	}
 	else
 	{
-		m_client = new Client(t_ip.c_str(), t_port, m_gameData, m_winData);
+		m_client = new Client(t_ip.c_str(), t_port, m_gameData, m_winData, m_connectData, m_gameStartData);
 	}
 
 	if (!m_client->Connect())
 	{
 		std::cout << "Failed to connect to server..." << std::endl;
 	}
+	sendConnectData();
 }
 
 
@@ -41,8 +50,8 @@ void GameClientHandler::disconnect()
 		{
 			m_client->Disconnect();
 		}
-	}	
-	delete m_client;
+		delete m_client;
+	}
 	m_client = nullptr;
 }
 
@@ -54,6 +63,11 @@ std::string& GameClientHandler::getGameData()
 std::string& GameClientHandler::getWinData()
 {
 	return m_winData;
+}
+
+bool GameClientHandler::getGameStart()
+{
+	return m_gameStartData == "start";
 }
 
 bool GameClientHandler::isConnected()
@@ -81,4 +95,15 @@ void GameClientHandler::sendWinData()
 {
 	std::string data = "Win";
 	m_client->SendWinData(data);
+}
+
+void GameClientHandler::sendConnectData()
+{
+	std::string data = "";
+	m_client->SendConnectData(data);
+}
+
+std::string GameClientHandler::getConnectData()
+{
+	return m_connectData;
 }
