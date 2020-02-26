@@ -8,6 +8,7 @@
 #include "Dot.h"
 #include "GameClientHandler.h"
 #include "SDL_ttf.h"
+#include <Windows.h>
 
 class Game
 {
@@ -87,4 +88,14 @@ private:
 	GameState m_state = GameState::Waiting;
 
 	int m_gameTime = 0;
+
+	bool m_hosted = false;
+	//Server* m_gameServer;
+	STARTUPINFO m_startupInfo = { sizeof(m_startupInfo) };;
+	PROCESS_INFORMATION m_processInfo;
+
+
+
+	void startGameServer();
+	void killGameServer();
 };

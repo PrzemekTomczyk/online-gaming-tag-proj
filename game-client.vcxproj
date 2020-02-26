@@ -99,6 +99,7 @@ xcopy /E /Y /I "$(ProjectDir)assets\*.*" "$(TargetDir)assets"</Command>
     <ClInclude Include="Dot.h" />
     <ClInclude Include="FileTransferData.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="LTexture.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />

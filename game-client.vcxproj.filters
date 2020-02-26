@@ -89,5 +89,8 @@
     <ClInclude Include="PacketType.h">
       <Filter>ClientFiles\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

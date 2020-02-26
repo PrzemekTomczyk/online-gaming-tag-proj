@@ -26,7 +26,6 @@ public: //Public functions
 	Server(int port, bool loopBacktoLocalHost = true);
 	~Server();
 	bool ListenForNewConnection();
-	int getConnectionCount() const;
 private: //Private functions
 	bool sendall(std::shared_ptr<Connection> connection, const char * data, const int totalBytes);
 	bool recvall(std::shared_ptr<Connection> connection, char * data, int totalBytes);

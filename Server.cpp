@@ -52,8 +52,3 @@ void Server::DisconnectClient(std::shared_ptr<Connection> connection) //Disconne
 	std::cout << "Cleaned up client: " << connection->m_ID << "." << std::endl;
 	std::cout << "Total connections: " << m_connections.size() << std::endl;
 }
-
-int Server::getConnectionCount() const
-{
-	return m_connections.size();
-}

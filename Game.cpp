@@ -86,6 +86,26 @@ void Game::processEvents()
 		case SDLK_ESCAPE:
 			m_isRunning = false;
 			break;
+		case SDLK_RETURN:
+		{
+			if (!m_hosted)
+			{
+				startGameServer();
+				//m_gameServer = new Server(1111, false);
+				m_hosted = true;
+			}
+			break;
+		}
+		case SDLK_BACKSPACE:
+		{
+			if (m_hosted)
+			{
+				//dele
+				killGameServer();
+				m_hosted = true;
+			}
+			break;
+		}
 		case SDLK_SPACE:
 		{
 			if (m_clientHandler.isConnected())
@@ -358,4 +378,39 @@ std::string Game::getErrorString(std::string t_errorMsg)
 {
 	std::string sdlError = SDL_GetError();
 	return t_errorMsg += " " + sdlError;
+}
+
+void Game::startGameServer()
+{
+	ZeroMemory(&m_startupInfo, sizeof(m_startupInfo));
+	m_startupInfo.cb = sizeof(m_startupInfo);
+	ZeroMemory(&m_processInfo, sizeof(m_processInfo));
+	
+	//std::string path = SDL_GetBasePath();
+	//path.append("\\Server.exe");
+	LPCSTR name = "C:\\Users\\Glucio\\Desktop\\online-gaming-tag-proj\\Debug\\Server.exe";
+
+	// Start the child process. 
+	if (!CreateProcess(
+		name,	// No module name (use command line)
+		NULL,			// Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&m_startupInfo,	// Pointer to STARTUPINFO structure
+		&m_processInfo)	// Pointer to PROCESS_INFORMATION structure
+		)
+	{
+		printf("CreateProcess failed (%d).\n", GetLastError());
+		return;
+	}
+}
+
+void Game::killGameServer()
+{
+	CloseHandle(m_processInfo.hProcess);
+	CloseHandle(m_processInfo.hThread);
 }
